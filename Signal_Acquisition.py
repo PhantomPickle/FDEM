@@ -6,11 +6,11 @@ print(daq.hat_list())
 # Initializing DAQ hats
 
 # MCC 152 DAQ hat used for signal generation
-#sig_gen = daq.mcc152()
+sig_gen = daq.mcc152(address=1)
 
 # MCC 172 DAQ hat used for signal acquisition
-#sig_acq = daq.mcc172() 
-#sig_acq.blink_led(10)
+sig_acq = daq.mcc172() 
+sig_acq.blink_led(10)
 
 # ADC sampling clock generated on signal acquisition hat and not shared
 # sample rate ~1kHz (rounded to 51.2 kHz / 51)
