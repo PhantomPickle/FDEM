@@ -77,8 +77,7 @@ def read_and_store_data(hat, num_samples_per_channel):
         samples_read = len(read_result.data)
         total_samples_read += samples_read
 
-        print('\r{:12}'.format(samples_read),
-              ' {:12}'.format(total_samples_read), end='')
+        print(f'\r Samples read: ', f'{total_samples_read:12}', end='')
 
         # Stores the current chunk of data
         start_index = samples_read - read_request_size
@@ -90,7 +89,7 @@ def read_and_store_data(hat, num_samples_per_channel):
     logfile = open(logname, "w")
     logfile.write("Index, Voltage (V)\n")
     for i, voltage in enumerate(scan_data):
-        logfile.write(f"{i}, {voltage:.2f}", )
+        logfile.write(f"{i}, {voltage:.2f}\n")
 
     print('\n')
     print('Data exported to CSV.')
