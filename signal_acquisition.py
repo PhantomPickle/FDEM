@@ -87,9 +87,9 @@ def read_and_store_data(hat, num_samples_per_channel):
     # Exports scan data to a csv
     logname = "scan.csv"
     logfile = open(logname, "w")
-    logfile.write("Index, Voltage (V)\n")
+    logfile.write("Voltage (V)\n")
     for i, voltage in enumerate(scan_data):
-        logfile.write(f"{i}, {voltage:.2f}\n")
+        logfile.write(f"{voltage:.2f}\n")
 
     print('\n')
     print('Data exported to CSV.')
