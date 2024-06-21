@@ -26,7 +26,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
     
         hat.a_in_scan_start(0x01, num_samples, options)
 
-        print('Starting scan ... Press Ctrl-C to stop\n')
+        print('Starting scan ... Press Ctrl-C to stop\n', actual_scan_rate)
 
         try:
             read_and_store_data(hat, num_samples)
