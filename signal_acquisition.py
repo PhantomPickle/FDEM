@@ -80,8 +80,8 @@ def read_and_store_data(hat, num_samples_per_channel):
         print(f'\r Samples read: ', f'{total_samples_read:12}', end='')
 
         # Stores the current chunk of data
-        start_index = samples_read - read_request_size
-        stop_index = samples_read
+        start_index = total_samples_read - read_request_size
+        stop_index = total_samples_read
         scan_data[start_index:stop_index] = read_result.data
 
     # Exports scan data to a csv
