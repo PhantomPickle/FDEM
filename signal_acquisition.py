@@ -2,6 +2,7 @@ from time import sleep
 from sys import stdout, version_info
 from daqhats import mcc172, OptionFlags, SourceType, HatIDs, HatError
 import numpy as np
+import os
 
 def main(): # pylint: disable=too-many-locals, too-many-statements
 
@@ -86,7 +87,8 @@ def read_and_store_data(hat, num_samples_per_channel):
 
     # Exports scan data to a csv
     logname = "scan.csv"
-    logfile = open('data/' + logname, "w")
+    path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
+    logfile = open(path, "w")
     logfile.write("Voltage (V)\n")
     for i, voltage in enumerate(scan_data):
         logfile.write(f"{voltage:.2f}\n")
