@@ -6,8 +6,8 @@ import os
 
 def main(): # pylint: disable=too-many-locals, too-many-statements
 
-    num_samples = 2**18
-    scan_rate = 2**12.
+    num_samples = 100000
+    scan_rate = 10000.
     options = OptionFlags.DEFAULT
 
     try:
@@ -22,7 +22,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
             (_source_type, actual_scan_rate, synced) = hat.a_in_clock_config_read()
             if not synced:
                 sleep(0.005)
-
+                                
         input('\nPress ENTER to begin scan ...')
     
         hat.a_in_scan_start(0x01, num_samples, options)
