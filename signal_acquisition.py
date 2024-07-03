@@ -6,8 +6,8 @@ import os
 
 def main(): # pylint: disable=too-many-locals, too-many-statements
 
-    num_samples = 10000
-    scan_rate = 1000.
+    num_samples = 2**20
+    scan_rate = 2**12.
     options = OptionFlags.DEFAULT
 
     try:
