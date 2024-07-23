@@ -6,13 +6,15 @@ import os
 
 def main(): # pylint: disable=too-many-locals, too-many-statements
 
-    num_samples = 100000
-    scan_rate = 10000.
+    num_samples = int(1e5)
+    scan_rate = int(1e4)
     options = OptionFlags.DEFAULT
 
     try:
 
         hat = mcc172()
+
+        #hat.iepe_config_write(0, 0)
 
         # Configure the clock and wait for sync to complete.
         hat.a_in_clock_config_write(SourceType.LOCAL, scan_rate)
@@ -91,7 +93,7 @@ def read_and_store_data(hat, num_samples_per_channel):
     logfile = open(path, "w")
     logfile.write("Voltage (V)\n")
     for i, voltage in enumerate(scan_data):
-        logfile.write(f"{voltage:.2f}\n")
+        logfile.write(f"{voltage:.7f}\n")
 
     print('\n')
     print('Data exported to CSV.')
