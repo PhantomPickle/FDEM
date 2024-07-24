@@ -1,25 +1,6 @@
 #!/usr/bin/env python
 #  -*- coding: utf-8 -*-
-"""
-    MCC 172 Functions Demonstrated:
-        mcc172.iepe_config_write
-        mcc172.a_in_clock_config_write
-        mcc172.a_in_clock_config_read
-        mcc172.a_in_sensitivity_write
-        mcc172.a_in_scan_start
-        mcc172.a_in_scan_read
-        mcc172.a_in_scan_stop
 
-    Purpose:
-        Perform a finite acquisition on 1 or more channels.
-
-    Description:
-        Acquires blocks of analog input data for a user-specified group
-        of channels.  The RMS value for each channel is displayed for each
-        block of data received from the device.  The acquisition is stopped
-        when the specified number of samples is acquired for each channel.
-
-"""
 from __future__ import print_function
 from time import sleep
 from sys import stdout, version_info
@@ -28,30 +9,14 @@ from daqhats import mcc172, OptionFlags, SourceType, HatIDs, HatError
 from daqhats_utils import select_hat_device, enum_mask_to_string, \
 chan_list_to_mask
 
-CURSOR_BACK_2 = '\x1b[2D'
-ERASE_TO_END_OF_LINE = '\x1b[0K'
 
-def get_iepe():
-    """
-    Get IEPE enable from the user.
-    """
-
-    while True:
-        # Wait for the user to enter a response
-        message = "IEPE enable [y or n]?  "
-        if version_info.major > 2:
-            response = input(message)
-        else:
-            response = raw_input(message)
-
-        # Check for valid response
-        if (response == "y") or (response == "Y"):
-            return 1
-        elif (response == "n") or (response == "N"):
-            return 0
-        else:
-            # Ask again.
-            print("Invalid response.")
+'''
+amplitude = .1
+dc_offset = 0
+for i in range(360):
+    output = amplitude * np.sine(i*(2*np.pi/360)) + dc_offset
+    output_hat.a_out_write(0, output, options)
+'''
 
 def main(): # pylint: disable=too-many-locals, too-many-statements
     """
@@ -71,13 +36,11 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
 
     try:
         # Select an MCC 172 HAT device to use.
-        address = select_hat_device(HatIDs.MCC_172)
+        address = select_hat_device(HatIDs.MCC_152)
         hat = mcc172(address)
 
         print('\nSelected MCC 172 HAT device at address', address)
 
-        # Turn on IEPE supply?
-        iepe_enable = get_iepe()
 
         for channel in channels:
             hat.iepe_config_write(channel, iepe_enable)
