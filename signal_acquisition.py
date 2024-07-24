@@ -4,6 +4,14 @@ from daqhats import mcc172, OptionFlags, SourceType, HatIDs, HatError
 import numpy as np
 import os
 
+'''
+amplitude = .1
+dc_offset = 0
+for i in range(360):
+    output = amplitude * np.sine(i*(2*np.pi/360)) + dc_offset
+    output_hat.a_out_write(0, output, options)
+'''
+
 def main(): # pylint: disable=too-many-locals, too-many-statements
 
     num_samples = 2**18
