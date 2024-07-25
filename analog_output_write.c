@@ -12,7 +12,7 @@
 
 *****************************************************************************/
 #include <stdbool.h>
-#include "../../daqhats_utils.h"
+#include "daqhats_utils.h"
 
 #define CHANNEL     0               // output channel, set to 1 for channel 1
 #define OPTIONS     OPTS_DEFAULT    // default output options (voltage), set to 
