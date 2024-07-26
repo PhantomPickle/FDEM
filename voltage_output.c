@@ -16,7 +16,7 @@
 #include "daqhats_utils.h"
 
 #define CHANNEL     0               // output channel, set to 1 for channel 1
-#define OPTIONS     OPTS_DEFAULT    // default output options (voltage), set to 
+#define OPTIONS     OPTS_NOSCALEDATA    // default output options (voltage), set to 
                                     // OPTS_NOSCALEDATA to use DAC codes
 
 int main(void)
@@ -28,9 +28,9 @@ int main(void)
 
     int numPeriods = 1000;
     int numSinePoints = numPeriods*360;
-    double sineVoltages[numSinePoints];
-    double amplitude = 1;
-    double offset = 1;
+    int sineVoltages[numSinePoints];
+    int amplitude = 2047;
+    int offset = 2047;
 
     address = 1;
     result = mcc152_open(1);
