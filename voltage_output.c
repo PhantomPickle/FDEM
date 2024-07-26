@@ -25,22 +25,23 @@ int main(void)
     int result;
     double value;
     char options_str[256];
-    int address = 1;
 
-    int numSinePoints = 360;
-    int sineVoltages[numSinePoints];
-    int amplitude = 1;
-    int offset = 1;
+    int numPeriods = 1000;
+    int numSinePoints = numPeriods*360;
+    double sineVoltages[numSinePoints];
+    double amplitude = 1;
+    double offset = 1;
 
+    address = 1;
     result = mcc152_open(1);
    
 
-    for (i=0; i<numSinePoints; i++)
+    for (int i=0; i<numSinePoints; i++)
     {
         sineVoltages[i] = amplitude*sin(i*(M_PI/180))+offset;
+        printf("%.2f\n", sineVoltages[i]);
     }
 
-    printf(sineVoltages);
 
     // while (true)
     // {
