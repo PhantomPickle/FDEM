@@ -25,32 +25,44 @@ int main(void)
     int result;
     double value;
     char options_str[256];
+    int address = 1;
 
-    address = 1
+    int numSinePoints = 360;
+    int sineVoltages[numSinePoints];
+    int amplitude = 1;
+    int offset = 1;
 
     result = mcc152_open(1);
    
-    while (true)
+
+    for (i=0; i<numSinePoints; i++)
     {
-        result = mcc152_a_out_write(1, 0, OPTIONS, value);
+        sineVoltages[i] = amplitude*sin(i*(M_PI/180))+offset;
     }
 
-    // Reset the output to 0V.
-    result = mcc152_a_out_write(address, CHANNEL, OPTIONS, 0.0);
-    if (result != RESULT_SUCCESS)
-    {
-        print_error(result);
-        mcc152_close(address);
-        return 1;
-    }
+    printf(sineVoltages);
+
+    // while (true)
+    // {
+    //     result = mcc152_a_out_write(1, 0, OPTIONS, value);
+    // }
+
+    // // Reset the output to 0V.
+    // result = mcc152_a_out_write(address, CHANNEL, OPTIONS, 0.0);
+    // if (result != RESULT_SUCCESS)
+    // {
+    //     print_error(result);
+    //     mcc152_close(address);
+    //     return 1;
+    // }
     
-    // Close the device.
-    result = mcc152_close(address);
-    if (result != RESULT_SUCCESS)
-    {
-        print_error(result);
-        return 1;
-    }
+    // // Close the device.
+    // result = mcc152_close(address);
+    // if (result != RESULT_SUCCESS)
+    // {
+    //     print_error(result);
+    //     return 1;
+    // }
 
     return 0;
 }
