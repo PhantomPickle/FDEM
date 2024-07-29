@@ -1,7 +1,10 @@
 import numpy as np
 import wave as wav
-import random
 import struct
+from scipy import signal
+from scipy.io import wavfile
+import matplotlib.pyplot as plt
+
 
 sampleRate = 1000. # in [Hz]
 duration = 10. # in [s]
@@ -23,6 +26,10 @@ for i, value in enumerate(values):
     wav_obj.writeframesraw(data)
 
 wav_obj.close()
+
+sample_rate, samples = wavfile.read('output.wav')
+plt.plot(samples)
+plt.show()
 
 # wav_obj = wav.open('output.wav', 'rb')
 # print(wav_obj.getsampwidth())
