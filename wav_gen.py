@@ -1,23 +1,24 @@
 import numpy as np
 import wave as wav
 import struct
-from scipy import signal
-from scipy.io import wavfile
-import matplotlib.pyplot as plt
+#from scipy  signal
+#from scipy.io  wavfile
+# matplotlib.pyplot as plt
 
 
-sampleRate = 1000. # in [Hz]
+sample_rate = 1000. # in [Hz]
 duration = 10. # in [s]
 frequency = 100. # in [Hz]
-num_frames = int(1e4)
+num_frames = int(duration*sample_rate)
 
 wav_obj = wav.open('output.wav', 'wb')
 wav_obj.setnchannels(1) # mono
 wav_obj.setsampwidth(2) # num bytes
-wav_obj.setframerate(sampleRate)
+wav_obj.setframerate(sample_rate)
  
 amplitude = 32767 # 16 bit peak to trough, why?
 values = [int(amplitude * np.sin(i*(2*np.pi/360))) for i in range(num_frames)]
+#print(values)
 
 for i, value in enumerate(values):
 #for i in range(num_frames):
@@ -27,9 +28,9 @@ for i, value in enumerate(values):
 
 wav_obj.close()
 
-sample_rate, samples = wavfile.read('output.wav')
-plt.plot(samples)
-plt.show()
+#sample_rate, samples = wavfile.read('output.wav')
+#plt.plot(samples)
+#plt.show()
 
 # wav_obj = wav.open('output.wav', 'rb')
 # print(wav_obj.getsampwidth())
