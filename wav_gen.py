@@ -7,7 +7,7 @@ import struct
 
 
 sample_rate = 1000. # in [Hz]
-duration = 10. # in [s]
+duration = 100. # in [s]
 frequency = 100. # in [Hz]
 num_frames = int(duration*sample_rate)
 
