@@ -5,7 +5,7 @@ import struct
 # import matplotlib.pyplot as plt
 
 
-sample_rate = 1000. # in [Hz]
+sample_rate = 10000. # in [Hz]
 duration = 100. # in [s]
 frequency = 100. # in [Hz]
 num_frames = int(duration*sample_rate)
@@ -16,7 +16,7 @@ wav_obj.setsampwidth(2) # num bytes
 wav_obj.setframerate(sample_rate)
  
 amplitude = 32767
-values = [int(amplitude * np.sin(i*(2*np.pi/360))) for i in range(num_frames)]
+values = [int(amplitude * np.sin(i*(10*2*np.pi/360))) for i in range(num_frames)]
 #print(values)
 
 for i, value in enumerate(values):
