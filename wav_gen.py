@@ -17,7 +17,7 @@ wav_obj.setframerate(sample_rate)
  
 amplitude = 32767
 values = [int(amplitude * np.sin(i*(frequency/sample_rate)*(2*np.pi))) for i in range(num_frames)] # (frequency in 1/s / sample_rate num_points) * (sample_rate num points / 1 point per cycle)
-#print(values)
+print(values)
 
 for i, value in enumerate(values):
     data = struct.pack('<h', value)
