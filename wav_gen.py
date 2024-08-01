@@ -1,12 +1,12 @@
 import numpy as np
 import wave as wav
 import struct
-#from scipy.io import wavfile
-#import matplotlib.pyplot as plt
+# from scipy.io import wavfile
+# import matplotlib.pyplot as plt
 
 
-sample_rate = 2000. # in [Hz]
-duration = 100. # in [s]
+sample_rate = 1000. # in [Hz]
+duration = 1. # in [s]
 frequency = 100. # in [Hz]
 num_frames = int(duration*sample_rate)
 
@@ -20,12 +20,12 @@ values = [int(amplitude * np.sin(i*(2*np.pi/360))) for i in range(num_frames)]
 #print(values)
 
 for i, value in enumerate(values):
-    data = struct.pack('<h', value)
+    data = struct.pack('>h', value)
     wav_obj.writeframesraw(data)
 
 wav_obj.close()
 
 # sample_rate, samples = wavfile.read('output.wav')
 # print(samples)
-# plt.plot(samples, '.')
+# plt.plot(samples)
 # plt.show()
