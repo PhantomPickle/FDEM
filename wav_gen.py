@@ -6,7 +6,7 @@ import struct
 
 
 sample_rate = 2000. # in [Hz]
-duration = 10. # in [s]
+duration = 100. # in [s]
 frequency = 100. # in [Hz]
 num_frames = int(duration*sample_rate)
 
@@ -15,12 +15,12 @@ wav_obj.setnchannels(1) # mono
 wav_obj.setsampwidth(2) # num bytes
 wav_obj.setframerate(sample_rate)
  
-amplitude = 32767 # 16 bit peak to trough, why?
+amplitude = 32767
 values = [int(amplitude * np.sin(i*(2*np.pi/360))) for i in range(num_frames)]
 #print(values)
 
 for i, value in enumerate(values):
-    data = struct.pack('<h', value) # 16 bit bc 'h' is short int apparently
+    data = struct.pack('<h', value)
     wav_obj.writeframesraw(data)
 
 wav_obj.close()
