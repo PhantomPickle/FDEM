@@ -20,7 +20,7 @@ values = [int(amplitude * np.sin(i*(2*np.pi/360))) for i in range(num_frames)]
 #print(values)
 
 for i, value in enumerate(values):
-    data = struct.pack('>h', value)
+    data = struct.pack('<h', value)
     wav_obj.writeframesraw(data)
 
 wav_obj.close()
