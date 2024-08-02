@@ -32,9 +32,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
             (_source_type, actual_scan_rate, synced) = hat.a_in_clock_config_read()
             if not synced:
                 sleep(0.005)
-                                
-        input('\nPress ENTER to begin scan ...')
-    
+                                    
         hat.a_in_scan_start(0x01, num_samples, options)
 
         print(f'Starting scan ... Press Ctrl-C to stop\nActual Sampling Frequency: {actual_scan_rate} Hz')
