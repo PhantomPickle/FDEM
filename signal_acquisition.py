@@ -14,7 +14,7 @@ for i in range(360):
 
 def main(): # pylint: disable=too-many-locals, too-many-statements
 
-    num_samples = int(1e6)
+    num_samples = int(1e5)
     scan_rate = int(1e4)
     options = OptionFlags.DEFAULT
 
