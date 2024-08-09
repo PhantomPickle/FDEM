@@ -7,7 +7,7 @@ import struct
 
 sample_rate = 48000. # in [Hz]
 duration = 100. # in [s]
-frequency = 1000. # in [Hz]
+frequency = 100. # in [Hz]
 num_frames = int(duration*sample_rate)
 
 wav_obj = wav.open('output.wav', 'wb')
