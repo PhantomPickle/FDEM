@@ -5,7 +5,7 @@ import struct
 # import matplotlib.pyplot as plt
 
 
-sample_rate = 44100. # in [Hz]
+sample_rate = 48000. # in [Hz]
 duration = 100. # in [s]
 frequency = 1000. # in [Hz]
 num_frames = int(duration*sample_rate)
@@ -27,5 +27,5 @@ wav_obj.close()
 
 # sample_rate, samples = wavfile.read('output.wav')
 # print(samples)
-# plt.plot(samples)
+# plt.plot(samples[0:int(5e2)])
 # plt.show()
