@@ -86,7 +86,8 @@ def read_and_store_data(hat, num_samples_per_channel):
         samples_read = len(read_result.data)
         total_samples_read += samples_read
 
-        print(f'\r Samples read: {total_samples_read:12}/{num_samples_per_channel}....... {int(100*total_samples_read/num_samples_per_channel)}', end='')
+        print(f'\r Samples read: {total_samples_read:12}/{num_samples_per_channel}.......\
+               {int(100*total_samples_read/num_samples_per_channel)}%', end='')
 
         # Stores the current chunk of data
         start_index = total_samples_read - read_request_size
