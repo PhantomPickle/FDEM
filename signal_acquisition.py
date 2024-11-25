@@ -1,6 +1,7 @@
 from time import sleep
 from sys import stdout, version_info
 from daqhats import mcc172, OptionFlags, SourceType, HatIDs, HatError
+import datetime
 import numpy as np
 import os
 
@@ -32,13 +33,17 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
             (_source_type, actual_scan_rate, synced) = hat.a_in_clock_config_read()
             if not synced:
                 sleep(0.005)
-                                    
+
+        # Gets start time in [s] and starts scan
+        start_time = datetime.now().second                            
         hat.a_in_scan_start(0x01, num_samples, options)
 
         print(f'Starting scan ... Press Ctrl-C to stop\nActual Sampling Frequency: {actual_scan_rate} Hz')
 
         try:
-            read_and_store_data(hat, num_samples)
+            scan_data = read_and_store_data(hat, num_samples, start_time)
+            export(scan_data, start_time, scan_rate)
+
         except KeyboardInterrupt:
             hat.a_in_scan_stop()
 
@@ -47,7 +52,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
     except (HatError, ValueError) as err:
         print('\n', err)
 
-def read_and_store_data(hat, num_samples_per_channel):
+def read_and_store_data(hat, num_samples_per_channel, t0):
     """
     Reads data from the DAQ HAT and stores the data in a csv file.  
     The reads are executed in a loop that continues until either 
@@ -94,17 +99,28 @@ def read_and_store_data(hat, num_samples_per_channel):
         stop_index = total_samples_read
         scan_data[start_index:stop_index] = read_result.data
 
-    # Exports scan data to a csv
-    logname = "scan.csv"
+    return scan_data
+
+def export(scan_data, start_time, scan_rate):
+    '''
+    Generates array of times for each sample, referenced to the system time at the start of
+    recording by the DAQ.
+    Exports magnetic data from the DAQ and corresponding timings to a CSV.
+
+    Args:
+    scan_data: magnetic data recorded by the DAQ
+    start_time: initial system time
+    scan_rate: sampling frequency of the DAQ
+    '''
+    
+    scan_times = [start_time*i for i in range(len(scan_data))]
+
+    logname = "mag_data.csv"
     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
     logfile = open(path, "w")
-    logfile.write("Voltage (V)\n")
-    for i, voltage in enumerate(scan_data):
-        logfile.write(f"{voltage:.7f}\n")
-
-    print('\n')
-    print('Data exported to CSV.')
-
+    logfile.write("Times (s), Voltage (V)\n")
+    for i in range(len(scan_data)):
+        logfile.write(f"{scan_times[i]}, {scan_data[i]:.7f}\n")
 
 if __name__ == '__main__':
     main()

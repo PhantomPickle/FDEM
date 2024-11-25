@@ -4,20 +4,20 @@ import os
 
 from ublox_gps import UbloxGps
 
-port = serial.Serial('/dev/ttyACM0', baudrate=38400, timeout=1)
-gps = UbloxGps(port)
+def main():
+    port = serial.Serial('/dev/ttyACM0', baudrate=38400, timeout=1)
+    gps = UbloxGps(port)
 
-gps_times = []
-gps_coords = []
-def run():
     # Acquires gps times and coordinates
+    gps_times = []
+    gps_coords = []
     try:
         print("Listening for UBX Messages")
         while True:
             try:
                 time = datetime.now().second
                 geo = gps.geo_coords()
-                gps_times. append(time)
+                gps_times.append(time)
                 gps_coords.append(geo)
                 print("Longitude: ", geo.lon) 
                 print("Latitude: ", geo.lat)
@@ -26,9 +26,14 @@ def run():
                 print(err)
 
     finally:
+        export(gps_times, gps_coords)
         port.close()
 
-def export():
+
+def export(gps_times, gps_coords):
+
+    gps_times = 
+
     # Exports gps data to a csv
     logname = "gps.csv"
     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
@@ -37,6 +42,6 @@ def export():
     for i in range(len(gps_times)):
         logfile.write(f"{gps_times[i]}, {gps_coords[i]:.7f}\n")
 
+
 if __name__ == '__main__':
-    run()
-    export()
+    main()
