@@ -1,7 +1,7 @@
 from time import sleep
 from sys import stdout, version_info
 from daqhats import mcc172, OptionFlags, SourceType, HatIDs, HatError
-import datetime
+from datetime import datetime as date
 import numpy as np
 import os
 
@@ -15,8 +15,9 @@ for i in range(360):
 
 def main(): # pylint: disable=too-many-locals, too-many-statements
 
-    num_samples = int(1e5)
+    scan_duration = 10 # In [s]
     scan_rate = int(1e4)
+    num_samples = scan_duration*scan_rate
     options = OptionFlags.DEFAULT
 
     try:
@@ -35,7 +36,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
                 sleep(0.005)
 
         # Gets start time in [s] and starts scan
-        start_time = datetime.now().second                            
+        start_time = date.now().second                            
         hat.a_in_scan_start(0x01, num_samples, options)
 
         print(f'Starting scan ... Press Ctrl-C to stop\nActual Sampling Frequency: {actual_scan_rate} Hz')
