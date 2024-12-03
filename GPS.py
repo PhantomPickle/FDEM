@@ -26,21 +26,19 @@ def main():
                 print(err)
 
     finally:
-        #export(gps_times, gps_coords)
+        export(gps_times, gps_coords)
         port.close()
 
 
-# def export(gps_times, gps_coords):
-
-#     gps_times = 
-
-#     # Exports gps data to a csv
-#     logname = "gps.csv"
-#     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
-#     logfile = open(path, "w")
-#     logfile.write("Times (s), Voltage (V)\n")
-#     for i in range(len(gps_times)):
-#         logfile.write(f"{gps_times[i]}, {gps_coords[i]:.7f}\n")
+def export(gps_times, gps_coords):
+# Exports gps data to a csv
+    logname = "gps.csv"
+    path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
+    logfile = open(path, "w")
+    logfile.write("Times (s), Voltage (V)\n")
+    for i in range(len(gps_times)):
+        logfile.write(f"{gps_times[i]}, {gps_coords[i]:.7f}\n")
+    logfile.close()    
 
 
 if __name__ == '__main__':
