@@ -15,7 +15,7 @@ for i in range(360):
 
 def main(): # pylint: disable=too-many-locals, too-many-statements
 
-    scan_duration = 10 # In [s]
+    scan_duration = 30 # In [s]
     scan_rate = int(1e4)
     num_samples = scan_duration*scan_rate
     options = OptionFlags.DEFAULT
@@ -43,6 +43,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
 
         try:
             scan_data = read_and_store_data(hat, num_samples, start_time)
+            print('\n')
             export(scan_data, start_time, scan_rate)
 
         except KeyboardInterrupt:
