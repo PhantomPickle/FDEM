@@ -2,10 +2,10 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-path = 'data/scan_3m_4Hz.csv'
+path = 'data/mag_data.csv'
 data = pd.read_csv(path)
 
-data_volts = data['Voltage (V)']
+data_volts = data[' Voltage (V)']
 sample_rate = 1000
 #display(data)
 plt.plot(data_volts[0:1000])

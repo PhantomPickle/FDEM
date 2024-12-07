@@ -120,9 +120,9 @@ def export(scan_data, start_time, scan_rate):
     logname = "mag_data.csv"
     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
     logfile = open(path, "w")
-    logfile.write("Times (s), Voltage (V)\n")
+    logfile.write("Times (s),Voltage (V)\n")
     for i in range(len(scan_data)):
-        logfile.write(f"{scan_times[i]}, {scan_data[i]:.7f}\n")
+        logfile.write(f"{scan_times[i]},{scan_data[i]:.7f}\n")
     logfile.close()
 
 if __name__ == '__main__':

@@ -44,9 +44,9 @@ def export(gps_times, gps_lat, gps_lon, gps_head):
     logname = "gps.csv"
     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
     logfile = open(path, "w")
-    logfile.write("Times (s), Latitude, Longitude, Heading\n")
+    logfile.write("Times (s),Latitude,Longitude,Heading\n")
     for i in range(len(gps_times)):
-        logfile.write(f"{gps_times[i]}, {gps_lat[i]:.7f}, {gps_lon[i]:.7f}, {gps_head[i]:.7f}\n")
+        logfile.write(f"{gps_times[i]},{gps_lat[i]:.7f}, {gps_lon[i]:.7f}, {gps_head[i]:.7f}\n")
     logfile.close()    
 
 
