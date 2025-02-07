@@ -127,3 +127,5 @@ def export(scan_data, start_time, scan_rate):
 
 if __name__ == '__main__':
     main()
+
+# Not logging all the data?? Look into this
