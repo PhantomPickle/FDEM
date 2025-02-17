@@ -22,9 +22,9 @@ def main():
         print("Recording GPS Coordinates")
         start_time = date.now().second
         time = 0
+        print("Entered gps logging loop.")
         while time < num_samples: # Only works because gps_rate is currently 1 Hz
             try:
-                print("Entered gps logging loop.")
                 time = date.now().second - start_time
                 geo = gps.geo_coords()
                 gps_times.append(time)
@@ -36,6 +36,7 @@ def main():
                 print(err)
 
     finally:
+        print("Completed gps logging loop.")
         export(gps_times, gps_lat, gps_lon, gps_head)
         port.close()
 
@@ -46,6 +47,7 @@ def export(gps_times, gps_lat, gps_lon, gps_head):
     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
     logfile = open(path, "w")
     logfile.write("Times (s),Latitude,Longitude,Heading\n")
+    print("Writing to log file.")
     for i in range(len(gps_times)):
         logfile.write(f"{gps_times[i]},{gps_lat[i]:.7f}, {gps_lon[i]:.7f}, {gps_head[i]:.7f}\n")
     logfile.close()    
