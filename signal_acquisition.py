@@ -13,7 +13,12 @@ for i in range(360):
     output_hat.a_out_write(0, output, options)
 '''
 
+
 def main(): # pylint: disable=too-many-locals, too-many-statements
+
+    # channels = [0, 1]
+    # channel_mask = chan_list_to_mask(channels)
+    # num_channels = len(channels)
 
     scan_duration = 30 # In [s]
     scan_rate = int(1e4)
