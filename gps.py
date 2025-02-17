@@ -47,7 +47,7 @@ def export(gps_times, gps_lat, gps_lon, gps_head):
     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
     logfile = open(path, "w")
     logfile.write("Times (s),Latitude,Longitude,Heading\n")
-    print("Writing to log file.")
+    print("Writing gps data to log file.")
     for i in range(len(gps_times)):
         logfile.write(f"{gps_times[i]},{gps_lat[i]:.7f}, {gps_lon[i]:.7f}, {gps_head[i]:.7f}\n")
     logfile.close()    
