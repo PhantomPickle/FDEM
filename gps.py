@@ -24,6 +24,7 @@ def main():
         time = 0
         while time < num_samples: # Only works because gps_rate is currently 1 Hz
             try:
+                print("Entered gps logging loop.")
                 time = date.now().second - start_time
                 geo = gps.geo_coords()
                 gps_times.append(time)
