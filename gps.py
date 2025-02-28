@@ -9,7 +9,7 @@ def main():
     port = serial.Serial('/dev/ttyACM0', baudrate=38400, timeout=1)
     gps = UbloxGps(port)
 
-    scan_duration = 5 # In [s]
+    scan_duration = 60 # In [s]
     gps_rate = 1 # In [Hz] determined by testing-- how to set this?
     num_samples = scan_duration*gps_rate
     
