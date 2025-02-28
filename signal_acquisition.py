@@ -77,7 +77,7 @@ def read_and_store_data(hat, num_samples_per_channel, t0):
     # pressed or the number of samples requested has been read.
     while total_samples_read < num_samples_per_channel:
         read_result = hat.a_in_scan_read(read_request_size, timeout)
-        print(read_result)
+        print("read_result")
         # Check for an overrun error
         if read_result.hardware_overrun:
             print('\n\nHardware overrun\n')
