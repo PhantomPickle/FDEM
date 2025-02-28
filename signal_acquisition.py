@@ -38,7 +38,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
         print(f'Starting scan ... Press Ctrl-C to stop\nActual Sampling Frequency: {actual_scan_rate} Hz')
 
         try:
-            scan_data = read_and_store_data(hat, num_samples, start_time)
+            scan_data = read_and_store_data(hat, num_samples, start_time, num_channels)
             print('\n')
             export(scan_data, start_time, scan_rate)
 
@@ -50,7 +50,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
     except (HatError, ValueError) as err:
         print('\n', err)
 
-def read_and_store_data(hat, num_samples_per_channel, t0):
+def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
     """
     Reads data from the DAQ HAT and stores the data in a csv file.  
     The reads are executed in a loop that continues until either 
@@ -67,7 +67,8 @@ def read_and_store_data(hat, num_samples_per_channel, t0):
     total_samples_read = 0
     read_request_size = 1000
     timeout = 5.0
-    scan_data = np.zeros(num_samples_per_channel)
+    scan_data = {'Channel 1': np.zeros(num_samples_per_channel), 
+                 'Channel 2': np.zeros(num_samples_per_channel)}
 
     # Since the read_request_size is set to a specific value, a_in_scan_read()
     # will block until that many samples are available or the timeout is
@@ -77,7 +78,7 @@ def read_and_store_data(hat, num_samples_per_channel, t0):
     # pressed or the number of samples requested has been read.
     while total_samples_read < num_samples_per_channel:
         read_result = hat.a_in_scan_read(read_request_size, timeout)
-        print(read_result)
+        print(read_result.data.shape)
         # Check for an overrun error
         if read_result.hardware_overrun:
             print('\n\nHardware overrun\n')
@@ -86,7 +87,7 @@ def read_and_store_data(hat, num_samples_per_channel, t0):
             print('\n\nBuffer overrun\n')
             break
 
-        samples_read = len(read_result.data)
+        samples_read = int(len(read_result.data) / num_channels)
         total_samples_read += samples_read
 
         print(f'\r Samples read: {total_samples_read:12}/{num_samples_per_channel}.......\
@@ -95,7 +96,7 @@ def read_and_store_data(hat, num_samples_per_channel, t0):
         # Stores the current chunk of data
         start_index = total_samples_read - read_request_size
         stop_index = total_samples_read
-        scan_data[start_index:stop_index] = read_result.data
+        scan_data['Channel 1'[start_index:stop_index] = read_result.data
     print("Scan completed.")
     return scan_data
 
@@ -119,7 +120,7 @@ def export(scan_data, start_time, scan_rate):
     print("Writing mag data to log file.")
     logfile.write("Times (s),Voltage (V)\n")
     for i in range(len(scan_data)):
-        logfile.write(f"{scan_times[i]},{scan_data[i]:.7f}\n")
+        logfile.write(f"{scan_times[i]},{scan_data[i]:.7f},{scan_data[i]:.7f}\n")
     logfile.close()
 
 if __name__ == '__main__':
