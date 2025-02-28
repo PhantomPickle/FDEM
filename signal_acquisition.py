@@ -98,7 +98,9 @@ def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
         # Stores the current chunk of data
         start_index = total_samples_read - read_request_size
         stop_index = total_samples_read
-        #scan_data['Channel 1'][start_index:stop_index] = read_result.data
+        scan_data['Channel 1'][start_index:stop_index] = read_result.data[:-2:2]
+        scan_data['Channel 2'][start_index:stop_index] = read_result.data[1:-1:2]
+
     print("Scan completed.")
     return scan_data
 
