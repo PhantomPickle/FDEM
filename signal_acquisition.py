@@ -25,6 +25,8 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
         # Configure the clock and wait for sync to complete.
         hat.a_in_clock_config_write(SourceType.LOCAL, scan_rate)
 
+        hat.a_in_sensitivity_write(1, sensitivity=1e4)
+        
         synced = False
         while not synced:
             (_source_type, actual_scan_rate, synced) = hat.a_in_clock_config_read()
@@ -78,7 +80,7 @@ def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
     # pressed or the number of samples requested has been read.
     while total_samples_read < num_samples_per_channel:
         read_result = hat.a_in_scan_read(read_request_size, timeout)
-        print(read_result.data.shape)
+        print(len(read_result.data))
         # Check for an overrun error
         if read_result.hardware_overrun:
             print('\n\nHardware overrun\n')
