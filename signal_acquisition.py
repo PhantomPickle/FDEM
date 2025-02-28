@@ -122,6 +122,7 @@ def export(scan_data, start_time, scan_rate):
     logfile = open(path, "w")
     print("Writing mag data to log file.")
     logfile.write("Times (s), Ch 1 Voltage (V), Ch 2 Voltage (V)\n")
+    print(len(scan_times))
     print(len(scan_data['Channel 1']))
     print(len(scan_data['Channel 2']))
     for i in range(len(scan_data['Channel 1'])):
