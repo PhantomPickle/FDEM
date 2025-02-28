@@ -1,24 +1,17 @@
 from time import sleep
 from sys import stdout, version_info
 from daqhats import mcc172, OptionFlags, SourceType, HatIDs, HatError
+from daqhats_utils import select_hat_device, enum_mask_to_string, \
+chan_list_to_mask
 from datetime import datetime as date
 import numpy as np
 import os
 
-'''
-amplitude = .1
-dc_offset = 0
-for i in range(360):
-    output = amplitude * np.sine(i*(2*np.pi/360)) + dc_offset
-    output_hat.a_out_write(0, output, options)
-'''
-
-
 def main(): # pylint: disable=too-many-locals, too-many-statements
 
-    # channels = [0, 1]
-    # channel_mask = chan_list_to_mask(channels)
-    # num_channels = len(channels)
+    channels = [0, 1]
+    channel_mask = chan_list_to_mask(channels)
+    num_channels = len(channels)
 
     scan_duration = 5 # In [s]
     scan_rate = int(1e4)
@@ -28,8 +21,6 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
     try:
 
         hat = mcc172()
-
-        #hat.iepe_config_write(0, 0)
 
         # Configure the clock and wait for sync to complete.
         hat.a_in_clock_config_write(SourceType.LOCAL, scan_rate)
@@ -42,7 +33,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
 
         # Gets start time in [s] and starts scan
         start_time = date.now().second                            
-        hat.a_in_scan_start(0x01, num_samples, options)
+        hat.a_in_scan_start(channel_mask, num_samples, options)
 
         print(f'Starting scan ... Press Ctrl-C to stop\nActual Sampling Frequency: {actual_scan_rate} Hz')
 
