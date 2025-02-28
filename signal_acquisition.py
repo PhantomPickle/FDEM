@@ -25,7 +25,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
         # Configure the clock and wait for sync to complete.
         hat.a_in_clock_config_write(SourceType.LOCAL, scan_rate)
 
-        hat.a_in_sensitivity_write(1, 1e4)
+        #hat.a_in_sensitivity_write(1, 1e4)
         
         synced = False
         while not synced:
