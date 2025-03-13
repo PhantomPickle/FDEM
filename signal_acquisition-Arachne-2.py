@@ -111,7 +111,7 @@ def export(scan_data, start_time, scan_rate):
     scan_rate: sampling frequency of the DAQ
     '''
     
-    scan_times = [(start_time/scan_rate)*i for i in range(len(scan_data))]
+        scan_times = [(start_time/scan_rate)*i for i in range(len(scan_data))]
 
     logname = "mag_data.csv"
     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
