@@ -6,7 +6,6 @@ def autocorrelation(time_series, lag_interval=0):
     variance = sum((time_series-mean)**2)/len(time_series)
     
     lagged_auto_covariances = np.zeros(len(time_series)-lag_interval)
-    print(lagged_auto_covariances)
     for i in range(len(time_series)-lag_interval):
         k = i+lag_interval # lag
         lagged_auto_covariances[i] = (sum((time_series[:-k]-mean)*(time_series[k:]-mean))/len(time_series))
