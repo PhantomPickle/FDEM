@@ -1,7 +1,7 @@
 from time import sleep
 from sys import stdout, version_info
 from daqhats import mcc172, OptionFlags, SourceType, HatIDs, HatError
-from daqhats_utils import select_hat_device, enum_mask_to_string, \
+from utilities.daqhats_utils import select_hat_device, enum_mask_to_string, \
 chan_list_to_mask
 from datetime import datetime as date
 import numpy as np
@@ -13,7 +13,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
     channel_mask = chan_list_to_mask(channels)
     num_channels = len(channels)
 
-    scan_duration = 5 # In [s]
+    scan_duration = 30 # In [s]
     scan_rate = int(1e4)
     num_samples = scan_duration*scan_rate
     options = OptionFlags.DEFAULT
@@ -25,6 +25,8 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
         # Configure the clock and wait for sync to complete.
         hat.a_in_clock_config_write(SourceType.LOCAL, scan_rate)
 
+        hat.a_in_sensitivity_write(1, 1000)
+        
         synced = False
         while not synced:
             (_source_type, actual_scan_rate, synced) = hat.a_in_clock_config_read()
@@ -67,7 +69,8 @@ def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
     total_samples_read = 0
     read_request_size = 1000
     timeout = 5.0
-    scan_data = np.zeros(num_samples_per_channel)
+    scan_data = {'Channel 1': np.zeros(num_samples_per_channel), 
+                 'Channel 2': np.zeros(num_samples_per_channel)}
 
     # Since the read_request_size is set to a specific value, a_in_scan_read()
     # will block until that many samples are available or the timeout is
@@ -77,7 +80,6 @@ def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
     # pressed or the number of samples requested has been read.
     while total_samples_read < num_samples_per_channel:
         read_result = hat.a_in_scan_read(read_request_size, timeout)
-        print(read_result)
         # Check for an overrun error
         if read_result.hardware_overrun:
             print('\n\nHardware overrun\n')
@@ -95,7 +97,9 @@ def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
         # Stores the current chunk of data
         start_index = total_samples_read - read_request_size
         stop_index = total_samples_read
-        scan_data[start_index:stop_index] = read_result.data
+        scan_data['Channel 1'][start_index:stop_index] = read_result.data[:-1:2]
+        scan_data['Channel 2'][start_index:stop_index] = read_result.data[1::2]
+
     print("Scan completed.")
     return scan_data
 
@@ -111,15 +115,15 @@ def export(scan_data, start_time, scan_rate):
     scan_rate: sampling frequency of the DAQ
     '''
     
-    scan_times = [(start_time/scan_rate)*i for i in range(len(scan_data))]
+    scan_times = [start_time+(i/scan_rate) for i in range(len(scan_data['Channel 1']))]
 
     logname = "mag_data.csv"
     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
     logfile = open(path, "w")
     print("Writing mag data to log file.")
-    logfile.write("Times (s),Voltage (V)\n")
-    for i in range(len(scan_data)):
-        logfile.write(f"{scan_times[i]},{scan_data[i]:.7f}\n")
+    logfile.write("Times (s), Ch 1 Voltage (V), Ch 2 Voltage (V)\n")
+    for i in range(len(scan_data['Channel 1'])):
+        logfile.write(f"{scan_times[i]},{scan_data['Channel 1'][i]:.7f},{scan_data['Channel 2'][i]:.7f}\n")
     logfile.close()
 
 if __name__ == '__main__':
