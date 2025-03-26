@@ -1,7 +1,6 @@
 import serial
 from datetime import datetime as date
 import os
-
 from ublox_gps import UbloxGps
 
 def main():
@@ -31,10 +30,9 @@ def main():
                 gps_lat.append(geo.lat)
                 gps_lon.append(geo.lon)
                 gps_head.append(geo.headMot)
-
             except (ValueError, IOError) as err:
                 print(err)
-
+        gps_times = gps_times + start_time
     finally:
         print("Completed gps logging loop.")
         export(gps_times, gps_lat, gps_lon, gps_head)
