@@ -3,3 +3,4 @@
 data/
 daqhats/
 __pycache__
+*/__pycache__
