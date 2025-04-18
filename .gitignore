@@ -2,3 +2,4 @@
 .DS_Store
 data/
 daqhats/
+__pycache__
