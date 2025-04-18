@@ -21,7 +21,6 @@ def main():
         print("Recording GPS Coordinates")
         start_time = date.now().timestamp
         time = 0
-        print("Entered gps logging loop.")
         while time < num_samples: # Only works because gps_rate is currently 1 Hz
             try:
                 time = date.now().timestamp - start_time
@@ -30,6 +29,7 @@ def main():
                 gps_lat.append(geo.lat)
                 gps_lon.append(geo.lon)
                 gps_head.append(geo.headMot)
+                print(f'Lat: {gps_lat}, Lon: {gps_lon:.2f}\n')
             except (ValueError, IOError) as err:
                 print(err)
         gps_times = gps_times + start_time
