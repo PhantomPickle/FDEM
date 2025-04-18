@@ -54,14 +54,8 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
 
 def calc_rms(data, channel, num_channels, num_samples_per_channel):
     """ Calculate RMS value from a block of samples. """
-    value = 0.0
-    index = channel
-    for _i in range(num_samples_per_channel):
-        value += (data[index] * data[index]) / num_samples_per_channel
-        index += num_channels
-
-    return np.sqrt(value)
-
+    rms_voltage = np.sqrt((data[channel]**2) / num_samples_per_channel)
+    return rms_voltage
 
 def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
     """
@@ -110,8 +104,8 @@ def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
         
         # Displays the RMS voltage for the current shunk of data
         for i in range(num_channels):
-                rms_voltage = calc_rms(read_result.data, i, num_channels, num_samples_per_channel)
-                print(f'{rms_voltage:.5f} Vrms\n')
+            rms_voltage = calc_rms(read_result.data, i, num_channels, num_samples_per_channel)
+            print(f'{rms_voltage:.5f} Vrms\n')
 
         # Stores the current chunk of data
         start_index = total_samples_read - read_request_size
