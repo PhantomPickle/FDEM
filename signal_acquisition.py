@@ -100,12 +100,12 @@ def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
         total_samples_read += samples_read
 
         print(f'\r Samples read: {total_samples_read:12}/{num_samples_per_channel}.......\
-               {int(100*total_samples_read/num_samples_per_channel)}%', end='')
+               {int(100*total_samples_read/num_samples_per_channel)}%\n')
         
         # Displays the RMS voltage for the current shunk of data
         for i in range(num_channels):
             rms_voltage = calc_rms(read_result.data, i, num_channels, num_samples_per_channel)
-            print(f'{rms_voltage:.5f} Vrms\n')
+            print(f'Ch {i}: {rms_voltage:.5f} Vrms\n')
 
         # Stores the current chunk of data
         start_index = total_samples_read - read_request_size

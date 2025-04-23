@@ -20,18 +20,19 @@ def main():
     try:
         print("Recording GPS Coordinates")
         start_time = date.now().timestamp()
-        print(start_time)
+        start_gps = gps.geo_coords()
+        print(f'Time: {start_time}\n')
+        print(f'Lat: {start_gps.lat:.2f}, Lon: {start_gps.lon:.2f}\n')
         time = 0
         while time < num_samples: # Only works because gps_rate is currently 1 Hz
             try:
                 time = date.now().timestamp() - start_time
-                print(time)
+                print(f'{time}\n')
                 geo = gps.geo_coords()
                 gps_times.append(time)
                 gps_lat.append(geo.lat)
                 gps_lon.append(geo.lon)
                 gps_head.append(geo.headMot)
-                print(f'Lat: {gps_lat:.2f}, Lon: {gps_lon:.2f}\n')
             except (ValueError, IOError) as err:
                 print(err)
         gps_times = gps_times + start_time
