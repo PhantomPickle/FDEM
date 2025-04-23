@@ -21,7 +21,7 @@ def main():
         print("Recording GPS Coordinates")
         start_time = date.now().second
         start_gps = gps.geo_coords()
-        print(f'Time: {start_time}\n')
+        print(f'Start Time: {start_time}\n')
         print(f'Lat: {start_gps.lat:.2f}, Lon: {start_gps.lon:.2f}\n')
         time = 0
         while time < num_samples: # Only works because gps_rate is currently 1 Hz
