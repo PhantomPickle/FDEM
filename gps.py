@@ -35,7 +35,7 @@ def main():
                 gps_head.append(geo.headMot)
             except (ValueError, IOError) as err:
                 print(err)
-        gps_times = gps_times + start_time
+        gps_times = [i + start_time for i in gps_times]
     finally:
         export(gps_times, gps_lat, gps_lon, gps_head)
         port.close()
