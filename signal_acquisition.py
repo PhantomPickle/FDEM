@@ -1,6 +1,6 @@
 from time import sleep
 from sys import stdout, version_info
-from daqhats import mcc172, OptionFlags, SourceType, HatIDs, HatError
+from daqhats import mcc172, OptionFlags, SourceType, hatIDs, hatError
 from utilities.daqhats_utils import select_hat_device, enum_mask_to_string, \
 chan_list_to_mask
 from datetime import datetime as date
@@ -20,36 +20,45 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
 
     try:
 
-        hat = mcc172()
+        secondary_hat = mcc172(address=0)
+        primary_hat = mcc172(address=2)
 
         # Configure the clock and wait for sync to complete.
-        hat.a_in_clock_config_write(SourceType.LOCAL, scan_rate)
+        secondary_hat.a_in_clock_config_write(SourceType.LOCAL, scan_rate)
+        primary_hat.a_in_clock_config_write(SourceType.LOCAL, scan_rate)
 
-        hat.a_in_sensitivity_write(1, 1000)
-        
         synced = False
         while not synced:
-            (_source_type, actual_scan_rate, synced) = hat.a_in_clock_config_read()
+            (_source_type, actual_scan_rate, synced) = secondary_hat.a_in_clock_config_read()
+            if not synced:
+                sleep(0.005)
+        synced = False
+        while not synced:
+            (_source_type, actual_scan_rate, synced) = primary_hat.a_in_clock_config_read()
             if not synced:
                 sleep(0.005)
 
         # Gets start time in [s] and starts scan
         start_time = date.now().second                            
-        hat.a_in_scan_start(channel_mask, num_samples, options)
+        secondary_hat.a_in_scan_start(channel_mask, num_samples, options)
+        primary_hat.a_in_scan_start(channel_mask, num_samples, options)
 
         print(f'Starting scan ... Press Ctrl-C to stop\nActual Sampling Frequency: {actual_scan_rate} Hz')
 
         try:
-            scan_data = read_and_store_data(hat, num_samples, start_time, num_channels)
+            secondary_scan_data = read_and_store_data(secondary_hat, num_samples, start_time, num_channels)
+            primary_scan_data = read_and_store_data(primary_hat, num_samples, start_time, num_channels)
             print('\n')
-            export(scan_data, start_time, scan_rate)
+            export(secondary_scan_data, primary_scan_data, start_time, scan_rate)
 
         except KeyboardInterrupt:
-            hat.a_in_scan_stop()
+            secondary_hat.a_in_scan_stop()
+            primary_hat.a_in_scan_stop()
 
-        hat.a_in_scan_cleanup()
+        secondary_hat.a_in_scan_cleanup()
+        primary_hat.a_in_scan_cleanup()
 
-    except (HatError, ValueError) as err:
+    except (hatError, ValueError) as err:
         print('\n', err)
 
 def calc_rms(data, channel, num_channels, num_samples_per_channel):
@@ -59,13 +68,13 @@ def calc_rms(data, channel, num_channels, num_samples_per_channel):
 
 def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
     """
-    Reads data from the DAQ HAT, displays RMS voltages for each block of data,
+    Reads data from the DAQ hat, displays RMS voltages for each block of data,
     and stores the data in a csv file.  
     The reads are executed in a loop that continues until either 
     the scan completes or an overrun error is detected.
 
     Args:
-        hat (mcc172): The mcc172 HAT device object.
+        hat (mcc172): The mcc172 hat device object.
         mum_samples_per_channel: The number of samples to read for each channel.
         t0: scan start time
         num_channels: number of recording channels
@@ -116,7 +125,7 @@ def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
     print("Scan completed.")
     return scan_data
 
-def export(scan_data, start_time, scan_rate):
+def export(secondary_scan_data, primary_scan_data, start_time, scan_rate):
     '''
     Generates array of times for each sample, referenced to the system time at the start of
     recording by the DAQ.
@@ -128,18 +137,18 @@ def export(scan_data, start_time, scan_rate):
     scan_rate: sampling frequency of the DAQ
     '''
     
-    scan_times = [start_time+(i/scan_rate) for i in range(len(scan_data['Channel 1']))]
+    scan_times = [start_time+(i/scan_rate) for i in range(len(secondary_scan_data['Channel 1']))]
 
     logname = "mag_data.csv"
     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
     logfile = open(path, "w")
     print("Writing mag data to log file.")
-    logfile.write("Times (s), Ch 1 Voltage (V), Ch 2 Voltage (V)\n")
-    for i in range(len(scan_data['Channel 1'])):
-        logfile.write(f"{scan_times[i]},{scan_data['Channel 1'][i]:.7f},{scan_data['Channel 2'][i]:.7f}\n")
+    logfile.write("Times (s),Secondary Ch 1 Voltage (V),Secondary Ch 2 Voltage (V),Primary Voltage (V)\n")
+    for i in range(len(secondary_scan_data['Channel 1'])):
+        logfile.write(f"{scan_times[i]}, {secondary_scan_data['Channel 1'][i]:.7f},{secondary_scan_data['Channel 2'][i]:.7f},\
+                                         {primary_scan_data['Channel 1'][i]:.7f}\n")
     logfile.close()
 
 if __name__ == '__main__':
     main()
 
-# Not logging all the data?? Look into this
