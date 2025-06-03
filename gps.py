@@ -1,5 +1,5 @@
 import serial
-from datetime import datetime as date
+import time as t
 import os
 from ublox_gps import UbloxGps
 
@@ -19,14 +19,14 @@ def main():
     gps_head = []
     try:
         print("Recording GPS Coordinates")
-        start_time = date.now().second
+        start_time = t.time()
         start_gps = gps.geo_coords()
         print(f'Start Time: {start_time}\n')
         print(f'Lat: {start_gps.lat:.2f}, Lon: {start_gps.lon:.2f}\n')
         time = 0
         while time < num_samples: # Only works because gps_rate is currently 1 Hz
             try:
-                time = date.now().second - start_time
+                time = t.time() - start_time
                 print(f'GPS Time: {time}\n')
                 geo = gps.geo_coords()
                 gps_times.append(time)
@@ -39,7 +39,6 @@ def main():
     finally:
         export(gps_times, gps_lat, gps_lon, gps_head)
         port.close()
-
 
 def export(gps_times, gps_lat, gps_lon, gps_head):
 # Exports gps data to a csv
