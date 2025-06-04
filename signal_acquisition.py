@@ -13,8 +13,8 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
     channel_mask = chan_list_to_mask(channels)
     num_channels = len(channels)
 
-    scan_duration = 5*60 # In [s]
-    scan_rate = int(1e4)
+    scan_duration = 60 # In [s]
+    scan_rate = int(2e3)
     num_samples = scan_duration*scan_rate
     options = OptionFlags.DEFAULT
 

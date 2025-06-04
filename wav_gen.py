@@ -6,11 +6,11 @@ import struct
 
 
 sample_rate = 48000. # in [Hz]
-duration = 100. # in [s]
+duration = 60. # in [s]
 frequency = 100. # in [Hz]
 num_frames = int(duration*sample_rate)
 
-wav_obj = wav.open('output.wav', 'wb')
+wav_obj = wav.open('output_waveform.wav', 'wb')
 wav_obj.setnchannels(1) # mono
 wav_obj.setsampwidth(2) # num bytes
 wav_obj.setframerate(sample_rate)
