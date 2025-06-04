@@ -139,7 +139,7 @@ def export(secondary_scan_data, primary_scan_data, start_time, scan_rate):
     
     scan_times = [start_time+(i/scan_rate) for i in range(len(secondary_scan_data['Channel 1']))]
 
-    logname = "mag_data.csv"
+    logname = "mag.csv"
     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
     logfile = open(path, "w")
     print("Writing mag data to log file.")
