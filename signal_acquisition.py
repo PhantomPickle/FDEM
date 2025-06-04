@@ -1,6 +1,6 @@
 from time import sleep
 from sys import stdout, version_info
-from daqhats import mcc172, OptionFlags, SourceType, hatIDs, hatError
+from daqhats import mcc172, OptionFlags, SourceType, hatError
 from utilities.daqhats_utils import select_hat_device, enum_mask_to_string, \
 chan_list_to_mask
 from datetime import datetime as date
