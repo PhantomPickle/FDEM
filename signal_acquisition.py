@@ -58,7 +58,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
         secondary_hat.a_in_scan_cleanup()
         primary_hat.a_in_scan_cleanup()
 
-    except (hatError, ValueError) as err:
+    except (HatError, ValueError) as err:
         print('\n', err)
 
 def calc_rms(data, channel, num_channels, num_samples_per_channel):
