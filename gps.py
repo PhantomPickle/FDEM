@@ -4,8 +4,6 @@ import os
 import datetime
 from ublox_gps import UbloxGps
 
-DO TIMING WITH DATETIME SO MATCHES WITH SCAN
-
 def main():
     
     port = serial.Serial('/dev/ttyACM0', baudrate=38400, timeout=1)
