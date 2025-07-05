@@ -39,7 +39,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
                 sleep(0.005)
 
         # Gets start time in [s] and starts scan
-        start_time = date.now().second                            
+        start_time = date.now().hour*3600 + date.now().minute*60 + date.now().second                            
         secondary_hat.a_in_scan_start(channel_mask, num_samples, options)
         primary_hat.a_in_scan_start(channel_mask, num_samples, options)
 
