@@ -1,7 +1,7 @@
 import serial
 import time as t
 import os
-import datetime
+from datetime import datetime as dt
 from ublox_gps import UbloxGps
 
 def main():
@@ -42,7 +42,7 @@ def main():
         port.close()
 
 def get_seconds():
-    return datetime.now().hours*3600 + datetime.now().minutes*60 + datetime.now().seconds
+    return dt.now().hours*3600 + dt.now().minutes*60 + dt.now().seconds
 
 def export(gps_times, gps_lat, gps_lon, gps_head):
 # Exports gps data to a csv

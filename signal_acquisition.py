@@ -3,7 +3,7 @@ from sys import stdout, version_info
 from daqhats import mcc172, OptionFlags, SourceType, HatError
 from utilities.daqhats_utils import select_hat_device, enum_mask_to_string, \
 chan_list_to_mask
-from datetime import datetime as date
+from datetime import datetime as dt
 import numpy as np
 import os
 
@@ -39,7 +39,7 @@ def main(): # pylint: disable=too-many-locals, too-many-statements
                 sleep(0.005)
 
         # Gets start time in [s] and starts scan
-        start_time = date.now().hour*3600 + date.now().minute*60 + date.now().second                            
+        start_time = dt.now().hour*3600 + dt.now().minute*60 + dt.now().second                            
         secondary_hat.a_in_scan_start(channel_mask, num_samples, options)
         primary_hat.a_in_scan_start(channel_mask, num_samples, options)
 
