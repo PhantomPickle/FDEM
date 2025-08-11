@@ -1,23 +1,23 @@
 import numpy as np
 import wave as wav
 import struct
+from utilities.wave_gen_utils import gen_chirp, gen_comb, gen_pure_wave
 # from scipy.io import wavfile
 # import matplotlib.pyplot as plt
 
 
 sample_rate = 48000. # in [Hz]
-duration = 60. # in [s]
-frequency = 100. # in [Hz]
-num_frames = int(duration*sample_rate)
+duration = 10. # in [s]
+frequency = 10. # in [Hz]
 
 wav_obj = wav.open('output_waveform.wav', 'wb')
 wav_obj.setnchannels(1) # mono
 wav_obj.setsampwidth(2) # num bytes
 wav_obj.setframerate(sample_rate)
  
-amplitude = 32767
-# (frequency in 1/s / sample_rate points per second) * [(sample_rate points per second / 1 point per cycle) * (2 pi radians per cycle)]
-values = [int(amplitude * np.sin(i*(frequency/sample_rate)*(2*np.pi))) for i in range(num_frames)] 
+#values = gen_pure_wave(duration=duration, f=frequency, sample_rate=sample_rate)
+#values = gen_chirp(duration=duration, f_i=10, f_f=200, sample_rate=sample_rate)
+values = gen_comb(duration=duration, f_min=10, num_teeth=10, spacing=10, sample_rate=sample_rate)
 
 for i, value in enumerate(values):
     data = struct.pack('<h', value)

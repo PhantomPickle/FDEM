@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from scipy.signal import spectrogram
-from utilities.signal_analysis_methods import autocorrelation
+from utilities.signal_analysis_utils import autocorrelation
 
 path = 'data/mag_data_fixed.csv'
 data = pd.read_csv(path)
