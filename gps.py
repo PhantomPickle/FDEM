@@ -27,7 +27,7 @@ def main():
         time = 0
         while time < num_samples: # Only works because gps_rate is currently 1 Hz
             try:
-                time = get_seconds - start_time
+                time = get_seconds() - start_time
                 print(f'GPS Time: {time}\n')
                 geo = gps.geo_coords()
                 gps_times.append(time)
@@ -42,7 +42,7 @@ def main():
         port.close()
 
 def get_seconds():
-    return dt.now().hours*3600 + dt.now().minutes*60 + dt.now().seconds
+    return dt.now().hour*3600 + dt.now().minute*60 + dt.now().second
 
 def export(gps_times, gps_lat, gps_lon, gps_head):
 # Exports gps data to a csv
