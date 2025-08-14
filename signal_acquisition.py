@@ -1,65 +1,87 @@
 from time import sleep
 from sys import stdout, version_info
-from daqhats import mcc172, OptionFlags, SourceType, HatError
+from daqhats import mcc172, OptionFlags, SourceType, HatError, TriggerModes
 from utilities.daqhats_utils import select_hat_device, enum_mask_to_string, \
 chan_list_to_mask
 from datetime import datetime as dt
 import numpy as np
 import os
 
-def main(): # pylint: disable=too-many-locals, too-many-statements
+# Constants
+CURSOR_BACK_2 = '\x1b[2D'
+ERASE_TO_END_OF_LINE = '\x1b[0K'
 
-    channels = [0, 1]
-    channel_mask = chan_list_to_mask(channels)
-    num_channels = len(channels)
+def main():
 
+    channels = [{0},{0, 1}]
     scan_duration = 60 # In [s]
-    scan_rate = int(2e3)
-    num_samples = scan_duration*scan_rate
-    options = OptionFlags.DEFAULT
+    sample_rate = int(2e3)
+    num_samples = scan_duration*sample_rate
+    options = OptionFlags.EXTTRIGGER
+    trigger_mode = TriggerModes.RISING_EDGE
 
     try:
 
-        secondary_hat = mcc172(address=0)
         primary_hat = mcc172(address=2)
+        secondary_hat = mcc172(address=0)
+        hats = [primary_hat, secondary_hat]
 
-        # Configure the clock and wait for sync to complete.
-        secondary_hat.a_in_clock_config_write(SourceType.LOCAL, scan_rate)
-        primary_hat.a_in_clock_config_write(SourceType.LOCAL, scan_rate)
-
+        # Configure the clocks with primary hat as master and wait for sync to complete.
+        primary_hat.a_in_clock_config_write(SourceType.MASTER, sample_rate)
+        secondary_hat.a_in_clock_config_write(SourceType.SLAVE, sample_rate)
         synced = False
         while not synced:
-            (_source_type, actual_scan_rate, synced) = secondary_hat.a_in_clock_config_read()
+            (_source_type, actual_sample_rate, synced) = primary_hat.a_in_clock_config_read()
             if not synced:
                 sleep(0.005)
-        synced = False
-        while not synced:
-            (_source_type, actual_scan_rate, synced) = primary_hat.a_in_clock_config_read()
-            if not synced:
-                sleep(0.005)
+        
+        # Configure the triggers
+        primary_hat.trigger_config(SourceType.MASTER, trigger_mode)
+        secondary_hat.trigger_config(SourceType.SLAVE, trigger_mode)
 
         # Gets start time in [s] and starts scan
         start_time = dt.now().hour*3600 + dt.now().minute*60 + dt.now().second                            
-        secondary_hat.a_in_scan_start(channel_mask, num_samples, options)
-        primary_hat.a_in_scan_start(channel_mask, num_samples, options)
+        for i, hat in enumerate(hats):
+            channel_mask = chan_list_to_mask(channels[i])
+            hat.a_in_scan_start(channel_mask, num_samples, options)
 
-        print(f'Starting scan ... Press Ctrl-C to stop\nActual Sampling Frequency: {actual_scan_rate} Hz')
+        print('\nWaiting for trigger ... Press Ctrl-C to stop scan \n')
 
         try:
-            secondary_scan_data = read_and_store_data(secondary_hat, num_samples, start_time, num_channels)
-            primary_scan_data = read_and_store_data(primary_hat, num_samples, start_time, num_channels)
+            # Monitor the trigger status on the master device.
+            wait_for_trigger(primary_hat)
+            print(f'\nStarting scan ... \nActual Sampling Frequency: {actual_sample_rate} Hz')
+            primary_scan_data, secondary_scan_data = read_and_store_data(hats, num_samples, start_time, channels)
             print('\n')
-            export(secondary_scan_data, primary_scan_data, start_time, scan_rate)
+            export(primary_scan_data, secondary_scan_data, start_time, sample_rate)
 
         except KeyboardInterrupt:
-            secondary_hat.a_in_scan_stop()
-            primary_hat.a_in_scan_stop()
+            # Clear the '^C' from the display.
+            print(CURSOR_BACK_2, ERASE_TO_END_OF_LINE, '\nAborted\n')
+    
+    except (HatError, ValueError) as error:
+        print('\n', error) 
+            
+    finally:
+        for hat in hats:
+            hat.a_in_scan_stop()
+            hat.a_in_scan_cleanup()
 
-        secondary_hat.a_in_scan_cleanup()
-        primary_hat.a_in_scan_cleanup()
+def wait_for_trigger(hat):
+    """
+    Monitor the status of the specified HAT device in a loop until the \n
+    triggered status is True or the running status is False. \n
 
-    except (HatError, ValueError) as err:
-        print('\n', err)
+    Args: \n
+        hat: The mcc172 HAT device object on which the status will be monitored.
+    """
+    # Read the status only to determine when the trigger occurs.
+    is_running = True
+    is_triggered = False
+    while is_running and not is_triggered:
+        status = hat.a_in_scan_status()
+        is_running = status.running
+        is_triggered = status.triggered
 
 def calc_rms(data, channel, num_channels, num_samples_per_channel):
     """ Calculate RMS value from a block of samples. """
@@ -125,7 +147,7 @@ def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
     print("Scan completed.")
     return scan_data
 
-def export(secondary_scan_data, primary_scan_data, start_time, scan_rate):
+def export(secondary_scan_data, primary_scan_data, start_time, sample_rate):
     '''
     Generates array of times for each sample, referenced to the system time at the start of
     recording by the DAQ.
@@ -134,10 +156,10 @@ def export(secondary_scan_data, primary_scan_data, start_time, scan_rate):
     Args:
     scan_data: magnetic data recorded by the DAQ
     start_time: initial system time
-    scan_rate: sampling frequency of the DAQ
+    sample_rate: sampling frequency of the DAQ
     '''
     
-    scan_times = [start_time+(i/scan_rate) for i in range(len(secondary_scan_data['Channel 1']))]
+    scan_times = [start_time+(i/sample_rate) for i in range(len(secondary_scan_data['Channel 1']))]
 
     logname = "mag.csv"
     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
