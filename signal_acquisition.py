@@ -122,9 +122,7 @@ def read_and_store_data(hats, num_samples_per_channel, t0, channels):
     # pressed or the number of samples requested has been read.
     while True:
         for i, hat in enumerate(hats):
-            print('reading chunk')
             read_result = hat.a_in_scan_read(read_request_size, timeout)
-            print('chunk read')
             is_running &= read_result.running
             # Records total samples read so far
             samples_read_per_channel[i] = int(len(read_result.data) / len(channels[i]))
@@ -163,7 +161,6 @@ def read_and_store_data(hats, num_samples_per_channel, t0, channels):
         if not is_running:
             print("Scan completed.")
             break
-        print('returning')
     return scan_data
 
 def export(scan_data, start_time, sample_rate):
