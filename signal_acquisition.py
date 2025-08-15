@@ -45,7 +45,7 @@ def main():
             channel_mask = chan_list_to_mask(channels[i])
             hat.a_in_scan_start(channel_mask, num_samples, options)
 
-        print('\nWaiting for trigger ... Press Ctrl-C to stop scan \n')
+        #print('\nWaiting for trigger ... Press Ctrl-C to stop scan \n')
 
         try:
             # Monitor the trigger status on the master device.
@@ -111,8 +111,8 @@ def read_and_store_data(hats, num_samples_per_channel, t0, channels):
     timeout = 5.0
     is_running = True
     scan_data = {'Primary': np.zeros(num_samples_per_channel),
-                 'Channel 1': np.zeros(num_samples_per_channel), 
-                 'Channel 2': np.zeros(num_samples_per_channel)}
+                 'Ch 1': np.zeros(num_samples_per_channel), 
+                 'Ch 2': np.zeros(num_samples_per_channel)}
 
     # Since the read_request_size is set to a specific value, a_in_scan_read()
     # will block until that many samples are available or the timeout is
