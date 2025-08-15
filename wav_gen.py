@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 import chart_studio.plotly as ply
 
 sample_rate = 48000. # in [Hz]
-duration = 5. # in [s]
+duration = 30. # in [s]
 frequency = 100. # in [Hz]
 
 wav_obj = wav.open('output_waveform.wav', 'wb')
