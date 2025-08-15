@@ -14,7 +14,7 @@ ERASE_TO_END_OF_LINE = '\x1b[0K'
 def main():
 
     channels = [{0},{0, 1}]
-    scan_duration = 60 # In [s]
+    scan_duration = 5 # In [s]
     sample_rate = int(2e3)
     num_samples = scan_duration*sample_rate
     options = OptionFlags.EXTTRIGGER
@@ -51,9 +51,9 @@ def main():
             # Monitor the trigger status on the master device.
             wait_for_trigger(primary_hat)
             print(f'\nStarting scan ... \nActual Sampling Frequency: {actual_sample_rate} Hz')
-            primary_scan_data, secondary_scan_data = read_and_store_data(hats, num_samples, start_time, channels)
+            scan_data = read_and_store_data(hats, num_samples, start_time, channels)
             print('\n')
-            export(primary_scan_data, secondary_scan_data, start_time, sample_rate)
+            export(scan_data, start_time, sample_rate)
 
         except KeyboardInterrupt:
             # Clear the '^C' from the display.
@@ -85,10 +85,10 @@ def wait_for_trigger(hat):
 
 def calc_rms(data, channel, num_channels, num_samples_per_channel):
     """ Calculate RMS value from a block of samples. """
-    rms_voltage = np.sqrt((data[channel]**2) / num_samples_per_channel)
+    rms_voltage = np.sqrt(np.array([data[i]**2 for i in range(len(data))])/num_samples_per_channel)
     return rms_voltage
 
-def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
+def read_and_store_data(hats, num_samples_per_channel, t0, channels):
     """
     Reads data from the DAQ hat, displays RMS voltages for each block of data,
     and stores the data in a csv file.  
@@ -102,13 +102,16 @@ def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
         num_channels: number of recording channels
 
     Returns:
-        None
+        scan_data
     """
 
-    total_samples_read = 0
+    samples_read_per_channel = [0,0] # Two elements, one for each hat
+    total_samples_read_per_channel = [0,0]
     read_request_size = 1000
     timeout = 5.0
-    scan_data = {'Channel 1': np.zeros(num_samples_per_channel), 
+    is_running = True
+    scan_data = {'Primary': np.zeros(num_samples_per_channel),
+                 'Channel 1': np.zeros(num_samples_per_channel), 
                  'Channel 2': np.zeros(num_samples_per_channel)}
 
     # Since the read_request_size is set to a specific value, a_in_scan_read()
@@ -117,37 +120,50 @@ def read_and_store_data(hat, num_samples_per_channel, t0, num_channels):
 
     # Continuously reads data until Ctrl-C is
     # pressed or the number of samples requested has been read.
-    while total_samples_read < num_samples_per_channel:
-        read_result = hat.a_in_scan_read(read_request_size, timeout)
-        # Check for an overrun error
-        if read_result.hardware_overrun:
-            print('\n\nHardware overrun\n')
-            break
-        elif read_result.buffer_overrun:
-            print('\n\nBuffer overrun\n')
-            break
+    while True:
+        for i, hat in enumerate(hats):
+            read_result = hat.a_in_scan_read(read_request_size, timeout)
+            is_running &= read_result.running
+            # Records total samples read so far
+            samples_read_per_channel[i] = int(len(read_result.data) / len(channels[i]))
+            total_samples_read_per_channel[i] += samples_read_per_channel[i]
+            # Stores the current chunk of data
+            if i == 0:
+                scan_data['Primary'][total_samples_read_per_channel[i]-samples_read_per_channel[i]:\
+                                     total_samples_read_per_channel[i]] = read_result.data
+            if i == 1:
+                scan_data['Ch 1'][total_samples_read_per_channel[i]-samples_read_per_channel[i]:\
+                                     total_samples_read_per_channel[i]] = read_result.data[0]
+                scan_data['Ch 2'][total_samples_read_per_channel[i]-samples_read_per_channel[i]:\
+                                     total_samples_read_per_channel[i]] = read_result.data[1]
 
-        samples_read = int(len(read_result.data) / num_channels)
-        total_samples_read += samples_read
+            # Check for an overrun error
+            if read_result.hardware_overrun:
+                print('\n\nHardware overrun\n')
+                break
+            elif read_result.buffer_overrun:
+                print('\n\nBuffer overrun\n')
+                break
 
-        print(f'\r Samples read: {total_samples_read:12}/{num_samples_per_channel}.......\
-               {int(100*total_samples_read/num_samples_per_channel)}%\n')
         
-        # Displays the RMS voltage for the current shunk of data
-        for i in range(num_channels):
-            rms_voltage = calc_rms(read_result.data, i, num_channels, num_samples_per_channel)
-            print(f'Ch {i+1}: {rms_voltage:.5f} Vrms\n')
+        # Displays the progress in terms of samples read
+        print(f'\r Samples read: {total_samples_read_per_channel[0]:12}/{num_samples_per_channel}.......\
+               {int(100*total_samples_read_per_channel[0]/num_samples_per_channel[0])}%\n')
+        
+        # Displays the RMS voltage for the current chunk of data
+        rms_voltage = calc_rms(scan_data['Primary'], num_samples_per_channel)
+        print(f'Primary: {rms_voltage:.5f} Vrms\n')
+        rms_voltage = calc_rms(scan_data['Ch 1'], num_samples_per_channel)
+        print(f'Ch 1: {rms_voltage:.5f} Vrms\n')
+        rms_voltage = calc_rms(scan_data['Ch 2'], num_samples_per_channel)
+        print(f'Ch 2: {rms_voltage:.5f} Vrms\n')
+        
+        if not is_running:
+            print("Scan completed.")
+            break
+        return scan_data
 
-        # Stores the current chunk of data
-        start_index = total_samples_read - read_request_size
-        stop_index = total_samples_read
-        scan_data['Channel 1'][start_index:stop_index] = read_result.data[:-1:2]
-        scan_data['Channel 2'][start_index:stop_index] = read_result.data[1::2]
-
-    print("Scan completed.")
-    return scan_data
-
-def export(secondary_scan_data, primary_scan_data, start_time, sample_rate):
+def export(scan_data, start_time, sample_rate):
     '''
     Generates array of times for each sample, referenced to the system time at the start of
     recording by the DAQ.
@@ -159,16 +175,16 @@ def export(secondary_scan_data, primary_scan_data, start_time, sample_rate):
     sample_rate: sampling frequency of the DAQ
     '''
     
-    scan_times = [start_time+(i/sample_rate) for i in range(len(secondary_scan_data['Channel 1']))]
+    scan_times = [start_time+(i/sample_rate) for i in range(len(scan_data['Ch 1']))]
 
     logname = "mag.csv"
     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
     logfile = open(path, "w")
     print("Writing mag data to log file.")
     logfile.write("Times (s),Secondary Ch 1 Voltage (V),Secondary Ch 2 Voltage (V),Primary Voltage (V)\n")
-    for i in range(len(secondary_scan_data['Channel 1'])):
-        logfile.write(f"{scan_times[i]}, {secondary_scan_data['Channel 1'][i]:.7f},{secondary_scan_data['Channel 2'][i]:.7f},\
-                                         {primary_scan_data['Channel 1'][i]:.7f}\n")
+    for i in range(len(scan_data['Primary'])):
+        logfile.write(f"{scan_times[i]}, {scan_data['Primary'][i]:.7f}, \
+                                         {scan_data['Ch 1'][i]:.7f}, {scan_data['Ch 2'][i]:.7f}\n")
     logfile.close()
 
 if __name__ == '__main__':
