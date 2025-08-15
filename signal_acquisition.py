@@ -184,7 +184,7 @@ def export(scan_data, start_time, sample_rate):
     path = os.path.expanduser('~apa/Documents/FDEM/data/'+logname)
     logfile = open(path, "w")
     print("Writing mag data to log file.")
-    logfile.write("Times (s),Secondary Ch 1 Voltage (V),Secondary Ch 2 Voltage (V),Primary Voltage (V)\n")
+    logfile.write("Times (s),Primary (V),Ch 1 (V),Ch 2 (V)\n")
     for i in range(len(scan_data['Primary'])):
         logfile.write(f"{scan_times[i]}, {scan_data['Primary'][i]:.7f}, \
                                          {scan_data['Ch 1'][i]:.7f}, {scan_data['Ch 2'][i]:.7f}\n")
