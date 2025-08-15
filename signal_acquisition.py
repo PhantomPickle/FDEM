@@ -164,7 +164,7 @@ def read_and_store_data(hats, num_samples_per_channel, t0, channels):
             print("Scan completed.")
             break
         print('returning')
-        return scan_data
+    return scan_data
 
 def export(scan_data, start_time, sample_rate):
     '''
