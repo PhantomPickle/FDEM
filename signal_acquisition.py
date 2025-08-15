@@ -17,7 +17,7 @@ def main():
     scan_duration = 5 # In [s]
     sample_rate = int(2e3)
     num_samples = scan_duration*sample_rate
-    options = OptionFlags.EXTTRIGGER
+    options = OptionFlags.DEFAULT
     trigger_mode = TriggerModes.RISING_EDGE
 
     try:
@@ -49,7 +49,7 @@ def main():
 
         try:
             # Monitor the trigger status on the master device.
-            wait_for_trigger(primary_hat)
+            #wait_for_trigger(primary_hat)
             print(f'\nStarting scan ... \nActual Sampling Frequency: {actual_sample_rate} Hz')
             scan_data = read_and_store_data(hats, num_samples, start_time, channels)
             print('\n')
