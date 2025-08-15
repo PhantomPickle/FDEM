@@ -85,7 +85,7 @@ def wait_for_trigger(hat):
 
 def calc_rms(data, num_samples_per_channel):
     """ Calculate RMS value from a block of samples. """
-    rms_voltage = np.sqrt(np.array([data[i]**2 for i in range(len(data))])/num_samples_per_channel)
+    rms_voltage = np.sqrt(np.sum(np.array([data[i]**2 for i in range(len(data))]))/num_samples_per_channel)
     return rms_voltage
 
 def read_and_store_data(hats, num_samples_per_channel, t0, channels):
