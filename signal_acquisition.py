@@ -148,7 +148,7 @@ def read_and_store_data(hats, num_samples_per_channel, t0, channels):
         
         # Displays the progress in terms of samples read
         print(f'\r Samples read: {total_samples_read_per_channel[0]:12}/{num_samples_per_channel}.......\
-               {int(100*total_samples_read_per_channel[0]/num_samples_per_channel[0])}%\n')
+               {int(100*total_samples_read_per_channel[0]/num_samples_per_channel)}%\n')
         
         # Displays the RMS voltage for the current chunk of data
         rms_voltage = calc_rms(scan_data['Primary'], num_samples_per_channel)
