@@ -133,6 +133,7 @@ def read_and_store_data(hats, num_samples_per_channel, t0, channels):
                                      total_samples_read_per_channel[i]] = read_result.data
             if i == 1:
                 print(read_result.data[0])
+                print(read_result.shape)
                 scan_data['Ch 1'][total_samples_read_per_channel[i]-samples_read_per_channel[i]:\
                                      total_samples_read_per_channel[i]] = read_result.data[0]
                 scan_data['Ch 2'][total_samples_read_per_channel[i]-samples_read_per_channel[i]:\
