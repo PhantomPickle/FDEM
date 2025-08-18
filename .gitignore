@@ -1,6 +1,6 @@
 */.DS_Store
 .DS_Store
-.pre-commit-config
+.pre-commit-config.yaml
 .gitattributes
 data/
 daqhats/
