@@ -1,5 +1,5 @@
 from time import sleep
-from sys import stdout, version_info
+from sys import stdout, version_info, argv
 from daqhats import mcc172, OptionFlags, SourceType, HatError, TriggerModes
 from utilities.daqhats_utils import select_hat_device, enum_mask_to_string, \
 chan_list_to_mask
@@ -14,7 +14,7 @@ ERASE_TO_END_OF_LINE = '\x1b[0K'
 def main():
 
     channels = [{0},{0, 1}]
-    scan_duration = 5 # In [s]
+    scan_duration = sys.argv[1] # In [s]
     sample_rate = int(2e3)
     num_samples = scan_duration*sample_rate
     options = OptionFlags.DEFAULT
