@@ -1,7 +1,7 @@
 import serial
 import time as t
 import os
-from sys import argval
+from sys import argv
 from datetime import datetime as dt
 from ublox_gps import UbloxGps
 
@@ -10,7 +10,7 @@ def main():
     port = serial.Serial('/dev/ttyACM0', baudrate=38400, timeout=1)
     gps = UbloxGps(port)
 
-    scan_duration = sys.argv[1] # In [s]
+    scan_duration = argv[1] # In [s]
     gps_rate = 1 # In [Hz] determined by testing-- how to set this?
     num_samples = scan_duration*gps_rate
     
