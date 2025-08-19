@@ -14,7 +14,7 @@ ERASE_TO_END_OF_LINE = '\x1b[0K'
 def main():
 
     channels = [{0},{0, 1}]
-    scan_duration = argv[1] # In [s]
+    scan_duration = int(argv[1]) # In [s]
     sample_rate = int(2e3)
     num_samples = scan_duration*sample_rate
     options = OptionFlags.DEFAULT
