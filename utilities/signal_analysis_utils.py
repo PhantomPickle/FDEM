@@ -48,6 +48,31 @@ def get_harmonic_envelope(received_signal, sample_rate, driving_signal, driving_
     filtered_harmonic_envelope = np.sqrt(filtered_harmonic_inphase_envelope**2 + filtered_harmonic_outofphase_envelope**2)
     return filtered_harmonic_inphase_envelope, filtered_harmonic_outofphase_envelope, filtered_harmonic_envelope
 
+def get_multi_harmonic_envelope(received_signal, sample_rate, driving_signal, driving_frequencies, order):
+    '''
+    Computes the total envelope for a particular harmonic given a discrete multi-frequency driving signal (i.e. comb).\n
+    received_signal: time series for which to compute the envelope \n
+    sample_rate: frequency at which the received signal is sampled, in [Hz] \n
+    driving_signal: time series of the driving signal used to perform lock-in \n
+    driving_frequencies: frequency of the driving signal, in [Hz] \n
+    order: order of the harmonic \n
+    returns: tuple of (in-phase component, out-of-phase component, full harmonic envelope)
+    '''
+    # constructs the analytic representation of the time series for the primary coil
+    analytic_fundamental = hilbert(driving_signal)
+    # normalizing the driving signal by dividing its time series by the instantaneous envelope
+    normed_analytic_fundamental = hilbert(driving_signal / np.abs(analytic_fundamental)) 
+    # locks-in received signal at a particular harmonic of the driving signal frequencies
+    locked_harmonic = received_signal * sum([normed_analytic_fundamental**(f_comb/driving_frequencies[0])
+                                                                        **order for f_comb in driving_frequencies])
+    # applies a low-pass filter scaled by lowest comb frequency to remove carrier signal and retain only harmonic envelopes
+    filter_coeffs = firwin(numtaps=int(sample_rate/(.01*driving_frequencies[0])), cutoff=1, fs=sample_rate, window='boxcar')
+    filtered_harmonic = filtfilt(filter_coeffs, 1.0, locked_harmonic)
+    filtered_harmonic_inphase_envelope = np.abs(2*filtered_harmonic.real)
+    filtered_harmonic_outofphase_envelope = np.abs(2*filtered_harmonic.imag)
+    filtered_harmonic_envelope = np.sqrt(filtered_harmonic_inphase_envelope**2 + filtered_harmonic_outofphase_envelope**2)
+    return filtered_harmonic_inphase_envelope, filtered_harmonic_outofphase_envelope, filtered_harmonic_envelope
+
 def get_total_envelope(received_signal, sample_rate, driving_frequency):
     '''
     Gets the total envelope for the received signal after low-pass filtering for noise. \n

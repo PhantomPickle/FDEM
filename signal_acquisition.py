@@ -120,47 +120,52 @@ def read_and_store_data(hats, num_samples_per_channel, t0, channels):
 
     # Continuously reads data until Ctrl-C is
     # pressed or the number of samples requested has been read.
-    while True:
-        for i, hat in enumerate(hats):
-            read_result = hat.a_in_scan_read(read_request_size, timeout)
-            is_running &= read_result.running
-            # Records total samples read so far
-            samples_read_per_channel[i] = int(len(read_result.data) / len(channels[i]))
-            total_samples_read_per_channel[i] += samples_read_per_channel[i]
-            # Stores the current chunk of data
-            if i == 0:
-                scan_data['Primary'][total_samples_read_per_channel[i]-samples_read_per_channel[i]:\
-                                     total_samples_read_per_channel[i]] = read_result.data
-            if i == 1:
-                scan_data['Ch 1'][total_samples_read_per_channel[i]-samples_read_per_channel[i]:\
-                                     total_samples_read_per_channel[i]] = read_result.data[:-1:2]
-                scan_data['Ch 2'][total_samples_read_per_channel[i]-samples_read_per_channel[i]:\
-                                     total_samples_read_per_channel[i]] = read_result.data[1::2]
+    try:
+        while True:
+            for i, hat in enumerate(hats):
+                read_result = hat.a_in_scan_read(read_request_size, timeout)
+                is_running &= read_result.running
+                # Records total samples read so far
+                samples_read_per_channel[i] = int(len(read_result.data) / len(channels[i]))
+                total_samples_read_per_channel[i] += samples_read_per_channel[i]
+                # Stores the current chunk of data
+                if i == 0:
+                    scan_data['Primary'][total_samples_read_per_channel[i]-samples_read_per_channel[i]:\
+                                        total_samples_read_per_channel[i]] = read_result.data
+                if i == 1:
+                    scan_data['Ch 1'][total_samples_read_per_channel[i]-samples_read_per_channel[i]:\
+                                        total_samples_read_per_channel[i]] = read_result.data[:-1:2]
+                    scan_data['Ch 2'][total_samples_read_per_channel[i]-samples_read_per_channel[i]:\
+                                        total_samples_read_per_channel[i]] = read_result.data[1::2]
 
-            # Check for an overrun error
-            if read_result.hardware_overrun:
-                print('\n\nHardware overrun\n')
-                break
-            elif read_result.buffer_overrun:
-                print('\n\nBuffer overrun\n')
-                break
+                # Check for an overrun error
+                if read_result.hardware_overrun:
+                    print('\n\nHardware overrun\n')
+                    break
+                elif read_result.buffer_overrun:
+                    print('\n\nBuffer overrun\n')
+                    break
 
-        
-        # Displays the progress in terms of samples read
-        print(f'\r Samples read: {total_samples_read_per_channel[0]:12}/{num_samples_per_channel}.......\
-               {int(100*total_samples_read_per_channel[0]/num_samples_per_channel)}%\n')
-        
-        # Displays the RMS voltage for the current chunk of data
-        rms_voltage = calc_rms(scan_data['Primary'], num_samples_per_channel)
-        print(f'Primary: {rms_voltage:.5f} Vrms\n')
-        rms_voltage = calc_rms(scan_data['Ch 1'], num_samples_per_channel)
-        print(f'Ch 1: {rms_voltage:.5f} Vrms\n')
-        rms_voltage = calc_rms(scan_data['Ch 2'], num_samples_per_channel)
-        print(f'Ch 2: {rms_voltage:.5f} Vrms\n')
-        
-        if not is_running:
-            print("Scan completed.")
-            break
+            # Displays the progress in terms of samples read
+            print(f'\r Samples read: {total_samples_read_per_channel[0]:12}/{num_samples_per_channel}.......\
+                {int(100*total_samples_read_per_channel[0]/num_samples_per_channel)}%\n')
+            
+            # Displays the RMS voltage for the current chunk of data
+            rms_voltage = calc_rms(scan_data['Primary'], num_samples_per_channel)
+            print(f'Primary: {rms_voltage:.5f} Vrms\n')
+            rms_voltage = calc_rms(scan_data['Ch 1'], num_samples_per_channel)
+            print(f'Ch 1: {rms_voltage:.5f} Vrms\n')
+            rms_voltage = calc_rms(scan_data['Ch 2'], num_samples_per_channel)
+            print(f'Ch 2: {rms_voltage:.5f} Vrms\n')
+            
+            if not is_running:
+                print("Scan completed.")
+                break
+            
+    except KeyboardInterrupt:
+        # Clear the '^C' from the display.
+        print(CURSOR_BACK_2, ERASE_TO_END_OF_LINE, '\nAborted\n')
+                
     return scan_data
 
 def export(scan_data, start_time, sample_rate):

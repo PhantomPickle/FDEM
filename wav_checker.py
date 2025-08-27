@@ -17,10 +17,23 @@ chirp_fftfreq = np.fft.rfftfreq(len(samples_chirp),1./sample_rate)
 
 fig = go.Figure()
 fig.add_trace(go.Scatter(
+    y= samples_pure, 
+    mode='lines', 
+    name='Pure',
+    line=dict(color='gold', width=2)
+))
+fig.add_trace(go.Scatter(
     y= samples_comb, 
     mode='lines', 
     name='Comb',
-    line=dict(color='gold', width=2)
+    line=dict(color='tomato', width=2)
+))
+fig.add_trace(go.Scatter(
+    y= samples_chirp, 
+    mode='lines', 
+    name='Chirp',
+
+    line=dict(color='royalblue', width=2)
 ))
 # fig.add_trace(go.Scatter(
 #     x= pure_fftfreq,

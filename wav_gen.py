@@ -8,16 +8,16 @@ import plotly.graph_objects as go
 import chart_studio.plotly as ply
 
 sample_rate = 48000. # in [Hz]
-duration = 10*60. # in [s]
+duration = 10. # in [s]
 frequency = 10. # in [Hz]
 
-wav_obj = wav.open('output_waveform.wav', 'wb')
+wav_obj = wav.open('network_analysis_chirp.wav', 'wb')
 wav_obj.setnchannels(1) # mono
 wav_obj.setsampwidth(2) # num bytes
 wav_obj.setframerate(sample_rate)
 
-values = gen_pure_wave(duration=duration, f=frequency, sample_rate=sample_rate)
-#values = gen_chirp(duration=duration, f_i=.1, f_f=200, sample_rate=sample_rate)
+#values = gen_pure_wave(duration=duration, f=frequency, sample_rate=sample_rate)
+values = gen_chirp(duration=duration, f_i=1e3, f_f=100e3, sample_rate=sample_rate)
 #values = gen_comb(duration=duration, f_min=10, num_teeth=10, spacing=10, sample_rate=sample_rate)
 
 for i, value in enumerate(values):
