@@ -2,10 +2,11 @@
 import os
 import time
 import serial
+from sys import argv
 from time import sleep
 from time import gmtime
 from time import strftime
-from datetime import datetime
+from datetime import datetime as dt
 
 ser = serial.Serial(
 	port='/dev/ttyUSB0',
@@ -15,13 +16,17 @@ ser = serial.Serial(
 	bytesize=serial.EIGHTBITS,
 	timeout=1
 )
+scan_duration = int(argv[1])
 
-actual_time = strftime("%Y-%m-%d %H-%M-%S",gmtime())
+def get_seconds():
+    return dt.now().hour*3600 + dt.now().minute*60 + dt.now().second
 
-input("Press enter to start recording\n")
-print("Beginning data collection!"+"\n")
-with open ("MagData-"+ str(actual_time)+".txt.","w") as file:
-	while 1:
+start_time = get_seconds()
+string_time = strftime("%Y-%m-%d %H-%M-%S",gmtime())
+
+print("Recording Mag Data"+"\n")
+with open ("MagData-"+ str(string_time)+".txt.","w") as file:
+	while get_seconds() - start_time < scan_duration:
 		try:
 			x=ser.readline()
 			file.write(str(x)),

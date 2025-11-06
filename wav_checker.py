@@ -4,30 +4,31 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import chart_studio.plotly as ply
 
-sample_rate, samples_pure = wavfile.read('output_waveform_pure.wav')
-sample_rate, samples_comb = wavfile.read('output_waveform_comb.wav')
-sample_rate, samples_chirp = wavfile.read('output_waveform_chirp.wav')
+# sample_rate, samples_pure = wavfile.read('output_waveform_pure.wav')
+# sample_rate, samples_comb = wavfile.read('output_waveform_comb.wav')
+# sample_rate, samples_chirp = wavfile.read('output_waveform_chirp.wav')
+sample_rate, samples_chirp = wavfile.read('network_analysis_chirp.wav')
 
-pure_fft = np.fft.rfft(samples_pure)
-pure_fftfreq = np.fft.rfftfreq(len(samples_pure),1./sample_rate)
-comb_fft = np.fft.rfft(samples_comb)
-comb_fftfreq = np.fft.rfftfreq(len(samples_comb),1./sample_rate)
+# pure_fft = np.fft.rfft(samples_pure)
+# pure_fftfreq = np.fft.rfftfreq(len(samples_pure),1./sample_rate)
+# comb_fft = np.fft.rfft(samples_comb)
+# comb_fftfreq = np.fft.rfftfreq(len(samples_comb),1./sample_rate)
 chirp_fft = np.fft.rfft(samples_chirp)
 chirp_fftfreq = np.fft.rfftfreq(len(samples_chirp),1./sample_rate)
 
 fig = go.Figure()
-fig.add_trace(go.Scatter(
-    y= samples_pure, 
-    mode='lines', 
-    name='Pure',
-    line=dict(color='gold', width=2)
-))
-fig.add_trace(go.Scatter(
-    y= samples_comb, 
-    mode='lines', 
-    name='Comb',
-    line=dict(color='tomato', width=2)
-))
+# fig.add_trace(go.Scatter(
+#     y= samples_pure, 
+#     mode='lines', 
+#     name='Pure',
+#     line=dict(color='gold', width=2)
+# ))
+# fig.add_trace(go.Scatter(
+#     y= samples_comb, 
+#     mode='lines', 
+#     name='Comb',
+#     line=dict(color='tomato', width=2)
+# ))
 fig.add_trace(go.Scatter(
     y= samples_chirp, 
     mode='lines', 

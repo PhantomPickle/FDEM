@@ -17,7 +17,7 @@ wav_obj.setsampwidth(2) # num bytes
 wav_obj.setframerate(sample_rate)
 
 #values = gen_pure_wave(duration=duration, f=frequency, sample_rate=sample_rate)
-values = gen_chirp(duration=duration, f_i=1e3, f_f=100e3, sample_rate=sample_rate)
+values = gen_chirp(duration=duration, f_i=100e2, f_f=10e3, sample_rate=sample_rate)
 #values = gen_comb(duration=duration, f_min=10, num_teeth=10, spacing=10, sample_rate=sample_rate)
 
 for i, value in enumerate(values):
