@@ -27,7 +27,7 @@ start_time = get_seconds()
 string_time = strftime("%Y-%m-%d %H-%M-%S",gmtime())
 current_time = start_time
 
-with open ("MagData-"+ str(string_time)+".txt.","w") as file:
+with open ("data/MagData-"+ str(string_time)+".txt.","w") as file:
 	while current_time - start_time < scan_duration:
 		try:
 			x=ser.readline()
