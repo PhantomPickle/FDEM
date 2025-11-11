@@ -39,3 +39,6 @@ with open ("MagData-"+ str(string_time)+".txt.","w") as file:
 			file.close(),
 			break
 
+print("Writing mag data to log file.")
+
+
