@@ -2,6 +2,7 @@
 import os
 import time
 import serial
+import re
 from sys import argv
 from time import sleep
 from time import gmtime
@@ -30,10 +31,11 @@ current_time = start_time
 with open ("data/MagData-"+ str(string_time)+".txt","w") as file:
 	while current_time - start_time < scan_duration:
 		try:
-			mag_data=ser.readline()
+			mag_data_raw=ser.readline()
 			current_time = get_seconds()
-			file.write(f"{current_time}, {mag_data}\n"),
-			print(mag_data),
+			mag_data_parsed = re.findall(rb'[+-]\d{6}', mag_data_raw)
+			file.write(f"{current_time}, {mag_data_parsed}\n"),
+			print(mag_data_raw),
 		except KeyboardInterrupt:
 			print("\nStopping!")
 			file.close(),
