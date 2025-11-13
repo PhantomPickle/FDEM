@@ -31,7 +31,7 @@ current_time = start_time
 with open ("data/MagData-"+ str(string_time)+".csv","w") as file:
 	while current_time - start_time < scan_duration:
 		try:
-			mag_data_raw=ser.readline()
+			mag_data_raw=ser.readline().decode('ascii')
 			current_time = get_seconds()
 			mag_data_parsed = re.findall(rb'[+-]\d{6}', mag_data_raw)
 			print(mag_data_parsed[0])
