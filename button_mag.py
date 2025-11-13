@@ -28,13 +28,13 @@ start_time = get_seconds()
 string_time = strftime("%Y-%m-%d %H-%M-%S",gmtime())
 current_time = start_time
 
-with open ("data/MagData-"+ str(string_time)+".txt","w") as file:
+with open ("data/MagData-"+ str(string_time)+".csv","w") as file:
 	while current_time - start_time < scan_duration:
 		try:
 			mag_data_raw=ser.readline()
 			current_time = get_seconds()
-			mag_data_parsed = re.findall(rb'[+-]\d{6}', mag_data_raw)
-			file.write(f"{current_time}, {mag_data_parsed}\n"),
+			mag_data_parsed = re.findall(r'[+-]\d{6}', mag_data_raw)
+			file.write(f"{current_time}, {mag_data_parsed[0]}, {mag_data_parsed[1]}, {mag_data_parsed[2]}\n"),
 			print(mag_data_raw),
 		except KeyboardInterrupt:
 			print("\nStopping!")
