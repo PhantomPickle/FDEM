@@ -29,6 +29,7 @@ string_time = strftime("%Y-%m-%d %H-%M-%S",gmtime())
 current_time = start_time
 
 with open ("data/MagData-"+ str(string_time)+".csv","w") as file:
+	file.write("Times (s),B_x (nT),B_y (nT),B_z (nT)\n")
 	while current_time - start_time < scan_duration:
 		try:
 			mag_data_raw=ser.readline().decode('ascii')
