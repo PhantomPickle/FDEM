@@ -30,10 +30,10 @@ current_time = start_time
 with open ("data/MagData-"+ str(string_time)+".txt","w") as file:
 	while current_time - start_time < scan_duration:
 		try:
-			x=ser.readline()
+			mag_data=ser.readline()
 			current_time = get_seconds()
-			file.write(str(current_time) + ',' + str(x)),
-			print(x),
+			file.write(f"{current_time}, {mag_data}\n"),
+			print(mag_data),
 		except KeyboardInterrupt:
 			print("\nStopping!")
 			file.close(),
