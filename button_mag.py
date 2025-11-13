@@ -34,6 +34,7 @@ with open ("data/MagData-"+ str(string_time)+".csv","w") as file:
 			mag_data_raw=ser.readline()
 			current_time = get_seconds()
 			mag_data_parsed = re.findall(rb'[+-]\d{6}', mag_data_raw)
+			print(mag_data_parsed[0])
 			file.write(f"{current_time}, {mag_data_parsed[0]}, {mag_data_parsed[1]}, {mag_data_parsed[2]}\n"),
 			print(mag_data_raw),
 		except KeyboardInterrupt:
