@@ -27,7 +27,6 @@ def main():
         time = 0
         while time < num_samples: # Only works because gps_rate is currently 1 Hz
             try:
-                print(get_seconds(), start_time)
                 time = get_seconds() - start_time
                 print(f'GPS Time: {time}\n')
                 geo = gps.geo_coords()
@@ -37,7 +36,8 @@ def main():
                 gps_head.append(geo.headMot)
             except (ValueError, IOError) as err:
                 print(err)
-        gps_times = [i + start_time for i in gps_times]
+        # keeping start time to ensure synchronization with mag data
+        gps_times = [i + start_time for i in gps_times] 
     finally:
         export(gps_times, gps_lat, gps_lon, gps_head)
         port.close()
