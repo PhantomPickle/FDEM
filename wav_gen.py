@@ -2,13 +2,13 @@ import numpy as np
 import wave as wav
 import struct
 from utilities.wave_gen_utils import gen_chirp, gen_comb, gen_pure_wave
-from scipy.io import wavfile
-import matplotlib.pyplot as plt
-import plotly.graph_objects as go
-import chart_studio.plotly as ply
+#from scipy.io import wavfile
+#import matplotlib.pyplot as plt
+#import plotly.graph_objects as go
+#import chart_studio.plotly as ply
 
 sample_rate = 48000. # in [Hz]
-duration = 30. # in [s]
+duration = 120. # in [s]
 frequency = 100. # in [Hz]
 
 wav_obj = wav.open('output_waveform_pure.wav', 'wb')
