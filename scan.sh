@@ -3,7 +3,7 @@ cleanup() {
     kill $(jobs -p) 2>/dev/null
     sudo pkill -f signal_acquisition.py 2>/dev/null
     sudo pkill -f gps.py 2>/dev/null
-    wait
+    wait 2>/dev/null
     exit 0
 }
 
