@@ -1,6 +1,8 @@
 cleanup() {
     echo "Caught interrupt, terminating processes..."
     kill $(jobs -p)
+    pkill -f signal_acquisition.py
+    pkill -f gps.py
     exit 0
 }
 
