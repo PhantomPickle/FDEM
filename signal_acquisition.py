@@ -120,8 +120,8 @@ def read_and_store_data(hats, num_samples_per_channel, t0, channels):
 
     # Continuously reads data until Ctrl-C is
     # pressed or the number of samples requested has been read.
-    try:
-        while True:
+    while True:
+        try:
             for i, hat in enumerate(hats):
                 read_result = hat.a_in_scan_read(read_request_size, timeout)
                 is_running &= read_result.running
@@ -162,9 +162,9 @@ def read_and_store_data(hats, num_samples_per_channel, t0, channels):
                 print("Scan completed.")
                 break
             
-    except KeyboardInterrupt:
-        # Clear the '^C' from the display.
-        print(CURSOR_BACK_2, ERASE_TO_END_OF_LINE, '\nAborted\n')
+        except KeyboardInterrupt:
+            # Clear the '^C' from the display.
+            print(CURSOR_BACK_2, ERASE_TO_END_OF_LINE, '\nAborted\n')
                 
     return scan_data
 
