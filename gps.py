@@ -28,7 +28,8 @@ def main():
         while time < num_samples: # Only works because gps_rate is currently 1 Hz
             try:
                 time = get_seconds() - start_time
-                print(f'GPS Time: {time}\n')
+                if time%10 == 0:
+                    print(f'GPS Time: {time}\n')
                 geo = gps.geo_coords()
                 gps_times.append(time)
                 gps_lat.append(geo.lat)

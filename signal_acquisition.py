@@ -107,7 +107,7 @@ def read_and_store_data(hats, num_samples_per_channel, t0, channels):
 
     samples_read_per_channel = [0,0] # Two elements, one for each hat
     total_samples_read_per_channel = [0,0]
-    read_request_size = 1000
+    read_request_size = 10000
     timeout = 5.0
     is_running = True
     scan_data = {'Primary': np.zeros(num_samples_per_channel),
