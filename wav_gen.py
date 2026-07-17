@@ -9,9 +9,9 @@ from utilities.wave_gen_utils import gen_chirp, gen_comb, gen_pure_wave
 
 sample_rate = 48000. # in [Hz]
 duration = 120. # in [s]
-frequency = 100. # in [Hz]
+frequency = 1000. # in [Hz]
 
-wav_obj = wav.open('output_waveform_pure.wav', 'wb')
+wav_obj = wav.open('waveforms/test_1kHz.wav', 'wb')
 wav_obj.setnchannels(1) # mono
 wav_obj.setsampwidth(2) # num bytes
 wav_obj.setframerate(sample_rate)
