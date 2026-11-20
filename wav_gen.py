@@ -8,10 +8,10 @@ from utilities.wave_gen_utils import gen_chirp, gen_comb, gen_pure_wave
 #import chart_studio.plotly as ply
 
 sample_rate = 48000. # in [Hz]
-duration = 30. # in [s]
-frequency = 5000. # in [Hz]
+duration = 600. # in [s]
+frequency = 100. # in [Hz]
 
-wav_obj = wav.open('waveforms/test_5kHz.wav', 'wb')
+wav_obj = wav.open('output_waveform_pure_100Hz_10min.wav', 'wb')
 wav_obj.setnchannels(1) # mono
 wav_obj.setsampwidth(2) # num bytes
 wav_obj.setframerate(sample_rate)

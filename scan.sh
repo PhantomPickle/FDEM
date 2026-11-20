@@ -12,7 +12,7 @@ trap cleanup SIGINT
 echo "Enter scan duration:"
 read USERVAL
 
-aplay ~/Documents/FDEM/waveforms/test_1kHz.wav &
+aplay ~/Documents/FDEM/waveforms/output_waveform_pure_100Hz_10min.wav &
 sudo ~/Documents/FDEM_venv/bin/python ~/Documents/FDEM/signal_acquisition.py "$USERVAL" &
 sudo ~/Documents/FDEM_venv/bin/python ~/Documents/FDEM/gps.py "$USERVAL" &
 
